@@ -1,54 +1,32 @@
-// Multi-step auth flow: phone → OTP → onboarding (new users only)
+// Multi-step auth flow: email → check-email (magic link sent)
 'use client'
 
 import { useState } from 'react'
-import PhoneStep from './PhoneStep'
-import OtpStep from './OtpStep'
-import OnboardingStep from './OnboardingStep'
+import EmailStep from './PhoneStep'
+import CheckEmailStep from './OtpStep'
 
-type Step = 'phone' | 'otp' | 'onboarding'
+type Step = 'email' | 'check-email'
 
 export default function LoginFlow() {
-  const [step, setStep] = useState<Step>('phone')
-  const [phone, setPhone] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [step, setStep] = useState<Step>('email')
+  const [email, setEmail] = useState('')
 
-  function handlePhoneSent(sentPhone: string) {
-    setError(null)
-    setPhone(sentPhone)
-    setStep('otp')
+  function handleEmailSent(sentEmail: string) {
+    setEmail(sentEmail)
+    setStep('check-email')
   }
 
-  function handleOtpVerified(isNewUser: boolean) {
-    setError(null)
-    if (isNewUser) setStep('onboarding')
-    // existing user: server action redirects, component unmounts
-  }
-
-  function handleChangeNumber() {
-    setError(null)
-    setStep('phone')
+  function handleChangeEmail() {
+    setStep('email')
   }
 
   return (
     <>
-      {error && (
-        <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-          {error}
-        </div>
+      {step === 'email' && <EmailStep onEmailSent={handleEmailSent} />}
+
+      {step === 'check-email' && (
+        <CheckEmailStep email={email} onChangeEmail={handleChangeEmail} />
       )}
-
-      {step === 'phone' && <PhoneStep onPhoneSent={handlePhoneSent} />}
-
-      {step === 'otp' && (
-        <OtpStep
-          phone={phone}
-          onOtpVerified={handleOtpVerified}
-          onChangeNumber={handleChangeNumber}
-        />
-      )}
-
-      {step === 'onboarding' && <OnboardingStep onError={setError} />}
     </>
   )
 }

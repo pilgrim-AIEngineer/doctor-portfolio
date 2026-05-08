@@ -1,6 +1,6 @@
 // Application-wide constants — no magic strings or numbers in component files
 export const APP_NAME = 'DocFolio'
-export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'https://docfolio.in'
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 
 export const PLANS = {
   FREE: 'free',
@@ -46,3 +46,12 @@ export const APPOINTMENT_STATUS = {
   CONTACTED: 'contacted',
   CLOSED: 'closed',
 } as const
+
+export const DASHBOARD_NAV = [
+  { label: 'Profile',      shortLabel: 'Profile',  href: '/dashboard/profile' },
+  { label: 'Template',     shortLabel: 'Template', href: '/dashboard/template' },
+  { label: 'Preview',      shortLabel: 'Preview',  href: '/dashboard/preview' },
+  { label: 'Appointments', shortLabel: 'Appts',    href: '/dashboard/appointments' },
+  { label: 'Billing',      shortLabel: 'Billing',  href: '/dashboard/billing' },
+  { label: 'Settings',     shortLabel: 'Settings', href: '/dashboard/settings' },
+] as const

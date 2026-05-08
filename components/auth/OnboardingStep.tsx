@@ -1,18 +1,15 @@
-// New-user onboarding form — step 3 of the auth flow
+// New-user onboarding form — shown after first magic-link sign-in
 'use client'
 
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { onboardingSchema } from '@/lib/validations/profile'
 import type { OnboardingInput } from '@/lib/validations/profile'
 import { completeOnboarding } from '@/app/actions/auth'
 
-interface Props {
-  onError: (message: string) => void
-}
-
-export default function OnboardingStep({ onError }: Props) {
+export default function OnboardingStep() {
+  const [serverError, setServerError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const {
     register,
@@ -23,22 +20,24 @@ export default function OnboardingStep({ onError }: Props) {
   function onSubmit(data: OnboardingInput) {
     const formData = new FormData()
     formData.append('name', data.name)
-    formData.append('email', data.email ?? '')
+    formData.append('phone', data.phone ?? '')
     formData.append('nmc_number', data.nmc_number)
     formData.append('specialty', data.specialty)
 
     startTransition(async () => {
       const result = await completeOnboarding(formData)
-      if (result.error) onError(result.error)
+      if (result.error) setServerError(result.error)
       // on success: redirect fires server-side, component unmounts
     })
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <p className="text-sm text-gray-600">
-        Welcome! Tell us a bit about yourself to set up your portfolio.
-      </p>
+      {serverError && (
+        <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          {serverError}
+        </div>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -57,17 +56,27 @@ export default function OnboardingStep({ onError }: Props) {
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
-          Email address
+          Mobile number
         </label>
-        <input
-          {...register('email')}
-          type="email"
-          placeholder="doctor@example.com"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
-        />
-        {errors.email && (
-          <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>
+        <div className="flex">
+          <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm select-none">
+            +91
+          </span>
+          <input
+            {...register('phone')}
+            type="tel"
+            inputMode="numeric"
+            maxLength={10}
+            placeholder="98765 43210"
+            className="flex-1 rounded-r-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
+          />
+        </div>
+        {errors.phone && (
+          <p className="mt-1 text-xs text-red-600">{errors.phone.message}</p>
         )}
+        <p className="mt-1 text-xs text-gray-500">
+          Used for the WhatsApp CTA on your public portfolio.
+        </p>
       </div>
 
       <div>
