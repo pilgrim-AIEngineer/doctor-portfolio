@@ -56,6 +56,40 @@ export async function saveProfileSection(
   }
 }
 
+export async function togglePublish(
+  publish: boolean
+): Promise<{ data?: { is_published: boolean }; error?: string }> {
+  try {
+    const supabase = createServerClient()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+
+    if (authError || !user) return { error: 'Not authenticated' }
+
+    const { data, error } = await supabase
+      .from('doctors')
+      .update({ is_published: publish })
+      .eq('id', user.id)
+      .select('is_published, slug')
+      .single()
+
+    if (error) {
+      console.error('[togglePublish]', error.message)
+      return { error: 'Failed to update visibility. Please try again.' }
+    }
+
+    revalidatePath('/dashboard/settings')
+    if (data?.slug) revalidatePath(`/dr/${data.slug}`)
+
+    return { data: { is_published: data.is_published } }
+  } catch (err) {
+    console.error('[togglePublish] unexpected', err)
+    return { error: 'Unexpected error. Please try again.' }
+  }
+}
+
 export async function getProfileSections(): Promise<{ data?: unknown; error?: string }> {
   try {
     const supabase = createServerClient()

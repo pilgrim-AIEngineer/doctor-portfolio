@@ -9,5 +9,7 @@ export interface Doctor {
   slug: string
   plan: 'free' | 'pro'
   is_verified: boolean
+  is_admin: boolean
+  is_published: boolean
   created_at: string
 }

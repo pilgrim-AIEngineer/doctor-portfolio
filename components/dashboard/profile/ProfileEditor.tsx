@@ -18,6 +18,7 @@ import AppointmentForm from './forms/AppointmentForm'
 import InsuranceForm from './forms/InsuranceForm'
 import LanguagesForm from './forms/LanguagesForm'
 import SocialForm from './forms/SocialForm'
+import EmptySectionState from '@/components/dashboard/EmptySectionState'
 
 interface FormProps { data: unknown }
 
@@ -39,22 +40,22 @@ const FORMS: Record<SectionKey, React.ComponentType<FormProps>> = {
   social: SocialForm,
 }
 
-const TABS: Array<{ key: SectionKey; label: string }> = [
-  { key: 'personal',       label: 'Personal' },
-  { key: 'qualifications', label: 'Quals' },
-  { key: 'registration',   label: 'Reg' },
-  { key: 'specialization', label: 'Spec' },
-  { key: 'experience',     label: 'Exp' },
-  { key: 'services',       label: 'Services' },
-  { key: 'achievements',   label: 'Awards' },
-  { key: 'research',       label: 'Research' },
-  { key: 'testimonials',   label: 'Reviews' },
-  { key: 'gallery',        label: 'Gallery' },
-  { key: 'clinic_info',    label: 'Clinic' },
-  { key: 'appointment',    label: 'Appt' },
-  { key: 'insurance',      label: 'Insurance' },
-  { key: 'languages',      label: 'Languages' },
-  { key: 'social',         label: 'Social' },
+const TABS: Array<{ key: SectionKey; label: string; fullLabel: string }> = [
+  { key: 'personal',       label: 'Personal',  fullLabel: 'personal info' },
+  { key: 'qualifications', label: 'Quals',     fullLabel: 'qualifications' },
+  { key: 'registration',   label: 'Reg',       fullLabel: 'registration details' },
+  { key: 'specialization', label: 'Spec',      fullLabel: 'specialization' },
+  { key: 'experience',     label: 'Exp',       fullLabel: 'experience' },
+  { key: 'services',       label: 'Services',  fullLabel: 'services' },
+  { key: 'achievements',   label: 'Awards',    fullLabel: 'achievements' },
+  { key: 'research',       label: 'Research',  fullLabel: 'research' },
+  { key: 'testimonials',   label: 'Reviews',   fullLabel: 'testimonials' },
+  { key: 'gallery',        label: 'Gallery',   fullLabel: 'gallery' },
+  { key: 'clinic_info',    label: 'Clinic',    fullLabel: 'clinic info' },
+  { key: 'appointment',    label: 'Appt',      fullLabel: 'appointment details' },
+  { key: 'insurance',      label: 'Insurance', fullLabel: 'insurance info' },
+  { key: 'languages',      label: 'Languages', fullLabel: 'languages' },
+  { key: 'social',         label: 'Social',    fullLabel: 'social links' },
 ]
 
 interface Props {
@@ -64,6 +65,8 @@ interface Props {
 export default function ProfileEditor({ sections }: Props) {
   const [activeTab, setActiveTab] = useState<SectionKey>('personal')
   const ActiveForm = FORMS[activeTab]
+  const activeTabMeta = TABS.find((t) => t.key === activeTab)!
+  const isEmpty = sections[activeTab] == null
 
   return (
     <div>
@@ -74,20 +77,24 @@ export default function ProfileEditor({ sections }: Props) {
             <button
               key={key}
               onClick={() => setActiveTab(key)}
-              className={`px-3 py-2.5 text-xs font-medium whitespace-nowrap transition-colors border-b-2 -mb-px ${
+              className={`relative px-3 py-2.5 text-xs font-medium whitespace-nowrap transition-colors border-b-2 -mb-px ${
                 activeTab === key
                   ? 'border-brand-600 text-brand-700'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
               {label}
+              {sections[key] == null && (
+                <span className="absolute top-2 right-1 w-1.5 h-1.5 rounded-full bg-amber-400" />
+              )}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Active form */}
+      {/* Active form — shows empty state banner when section has no saved data */}
       <div className="bg-white rounded-xl border border-gray-200 p-6">
+        {isEmpty && <EmptySectionState sectionLabel={activeTabMeta.fullLabel} />}
         <ActiveForm data={sections[activeTab]} />
       </div>
     </div>

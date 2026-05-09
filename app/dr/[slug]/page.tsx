@@ -11,6 +11,7 @@ import type { DoctorProfile } from '@/types/DoctorProfile'
 import ClassicTemplate from '@/components/templates/classic'
 import ModernTemplate from '@/components/templates/modern'
 import BoldTemplate from '@/components/templates/bold'
+import NotPublished from '@/components/portfolio/NotPublished'
 
 export const revalidate = ISR_REVALIDATE_SECONDS
 
@@ -43,7 +44,7 @@ const fetchPortfolioData = cache(async (slug: string): Promise<PortfolioData> =>
 
   const { data: doctor, error: doctorError } = await supabase
     .from('doctors')
-    .select('id, name, email, phone, nmc_number, specialty, slug, plan, is_verified, created_at')
+    .select('id, name, email, phone, nmc_number, specialty, slug, plan, is_verified, is_published, created_at')
     .eq('slug', slug)
     .single()
 
@@ -71,7 +72,7 @@ const fetchPortfolioData = cache(async (slug: string): Promise<PortfolioData> =>
 
 export async function generateStaticParams() {
   const supabase = getPublicSupabase()
-  const { data } = await supabase.from('doctors').select('slug')
+  const { data } = await supabase.from('doctors').select('slug').eq('is_published', true)
   return (data ?? []).map((d) => ({ slug: d.slug as string }))
 }
 
@@ -119,6 +120,12 @@ export default async function DoctorPortfolioPage({ params }: PageProps) {
   if (!data) notFound()
 
   const { doctor, sections, template } = data
+
+  if (!doctor.is_published) {
+    const appointment = sections.appointment as { whatsapp?: string } | undefined
+    return <NotPublished doctorName={doctor.name} whatsapp={appointment?.whatsapp} />
+  }
+
   const jsonLd = buildJsonLd(doctor, sections)
   const profile: DoctorProfile = { doctor, sections, template }
 

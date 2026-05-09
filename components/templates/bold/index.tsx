@@ -1,25 +1,36 @@
-// Bold template — high-contrast black-and-gold portfolio layout
+// Bold template — dark navy and gold premium portfolio layout with serif headings
 import type { DoctorProfile } from '@/types/DoctorProfile'
+import type {
+  PersonalSection,
+  AppointmentSection,
+  ExperienceSection,
+  ServicesSection,
+  SpecializationSection,
+} from '@/types/Profile'
+import BoldHero from './Hero'
+import BoldStats from './Stats'
+import BoldSections from './Sections'
+import BoldAppointmentCTA from './AppointmentCTA'
 
 interface BoldTemplateProps {
   profile: DoctorProfile
 }
 
 export default function BoldTemplate({ profile }: BoldTemplateProps) {
-  const { doctor } = profile
-
+  const { doctor, sections } = profile
   return (
-    <div className="min-h-screen bg-black text-white">
-      <section className="px-6 py-20 max-w-5xl mx-auto">
-        <h1 className="text-6xl font-black uppercase leading-none mb-3">Dr. {doctor.name}</h1>
-        <p className="text-xl text-gold-400">{doctor.specialty}</p>
-        {doctor.is_verified && (
-          <span className="inline-block mt-4 text-xs text-gold-400 border border-gold-400 px-3 py-1 rounded-full">
-            ✓ NMC Verified
-          </span>
-        )}
-      </section>
-      {/* Sections and AppointmentCTA added per section */}
+    <div className="min-h-screen bg-navy text-white pb-24 md:pb-0">
+      <BoldHero doctor={doctor} personal={sections.personal as PersonalSection | undefined} />
+      <BoldStats
+        experience={sections.experience as ExperienceSection | undefined}
+        services={sections.services as ServicesSection | undefined}
+        specialization={sections.specialization as SpecializationSection | undefined}
+      />
+      <BoldSections sections={sections} />
+      <BoldAppointmentCTA
+        appointment={sections.appointment as AppointmentSection | undefined}
+        doctor={doctor}
+      />
     </div>
   )
 }

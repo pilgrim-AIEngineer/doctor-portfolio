@@ -25,13 +25,20 @@ const config: Config = {
         gold: {
           50: '#fffbeb',
           100: '#fef3c7',
+          300: '#FFD700',
           400: '#fbbf24',
           500: '#f59e0b',
           600: '#d97706',
         },
+        navy: {
+          DEFAULT: '#1a1a2e',
+          light: '#252542',
+          dark: '#0f0f1a',
+        },
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        sans:  ['var(--font-inter)',    'system-ui', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'Georgia',   'serif'],
       },
     },
   },
