@@ -1,7 +1,7 @@
 // Multi-image drag-and-drop uploader — used in GalleryForm
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Upload, X } from 'lucide-react'
 import { uploadImage } from '@/app/actions/upload'
@@ -26,9 +26,14 @@ export default function ImageUploader({ value, onChange }: Props) {
   const [uploading, setUploading] = useState<UploadingItem[]>([])
   const [errors, setErrors] = useState<string[]>([])
 
+  // Always keep a ref to the latest value so concurrent upload batches
+  // never clobber each other via a stale prop closure
+  const latestValueRef = useRef(value)
+  useEffect(() => { latestValueRef.current = value }, [value])
+
   async function handleFiles(files: FileList) {
     setErrors([])
-    const remaining = UPLOAD_GALLERY_MAX_IMAGES - value.length
+    const remaining = UPLOAD_GALLERY_MAX_IMAGES - latestValueRef.current.length
     const toUpload = Array.from(files).slice(0, remaining)
 
     if (files.length > remaining) {
@@ -70,7 +75,7 @@ export default function ImageUploader({ value, onChange }: Props) {
     )
 
     if (newUrls.length > 0) {
-      onChange([...value, ...newUrls])
+      onChange([...latestValueRef.current, ...newUrls])
     }
   }
 

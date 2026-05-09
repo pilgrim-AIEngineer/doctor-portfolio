@@ -37,7 +37,18 @@ export async function saveProfileSection(
       return { error: 'Failed to save. Please try again.' }
     }
 
+    // Revalidate both the dashboard and the public portfolio so changes appear immediately
+    const { data: doctorRow } = await supabase
+      .from('doctors')
+      .select('slug')
+      .eq('id', user.id)
+      .single()
+
     revalidatePath('/dashboard/profile')
+    if (doctorRow?.slug) {
+      revalidatePath(`/dr/${doctorRow.slug}`)
+    }
+
     return { data: saved }
   } catch (err) {
     console.error('[saveProfileSection] unexpected', err)

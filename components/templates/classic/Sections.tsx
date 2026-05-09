@@ -1,7 +1,7 @@
 // Classic template section renderers — all profile sections in display order
-import Image from 'next/image'
 import { Clock, ExternalLink, MapPin, Phone } from 'lucide-react'
 import { UPLOAD_GALLERY_MAX_IMAGES } from '@/lib/constants'
+import GalleryLightbox from './GalleryLightbox'
 import type {
   SectionKey,
   PersonalSection,
@@ -33,16 +33,21 @@ interface InsuranceData {
 
 function SectionBlock({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="max-w-3xl mx-auto px-6 py-10 border-b border-gray-100">
-      <h2 className="text-xl font-semibold text-gray-900 mb-5">{title}</h2>
-      {children}
-    </section>
+    <div className="max-w-3xl mx-auto px-4 md:px-6">
+      <section className="bg-white rounded-2xl shadow-sm border border-gray-100 px-6 py-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-1.5 h-6 bg-brand-600 rounded-full shrink-0" />
+          <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+        </div>
+        {children}
+      </section>
+    </div>
   )
 }
 
 function Pill({ label }: { label: string }) {
   return (
-    <span className="inline-block bg-brand-50 text-brand-700 text-sm px-3 py-1 rounded-full">
+    <span className="inline-flex items-center bg-brand-50 text-brand-700 text-sm px-3.5 py-1.5 rounded-full border border-brand-100 font-medium">
       {label}
     </span>
   )
@@ -64,18 +69,28 @@ function QualificationsBlock({ data }: { data: QualificationsSection }) {
   return (
     <SectionBlock title="Qualifications">
       {hasDegrees && (
-        <div className="mb-4">
-          <p className="text-sm font-medium text-gray-500 mb-2">Degrees</p>
-          <ul className="space-y-1 text-gray-700">
-            {data.degrees.map((d, i) => <li key={i}>{d}</li>)}
+        <div className="mb-5">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Degrees</p>
+          <ul className="space-y-2">
+            {data.degrees.map((d, i) => (
+              <li key={i} className="flex gap-3 text-gray-800">
+                <span className="w-2 h-2 bg-brand-500 rounded-full shrink-0 mt-1.5" />
+                {d}
+              </li>
+            ))}
           </ul>
         </div>
       )}
       {hasFellowships && (
         <div>
-          <p className="text-sm font-medium text-gray-500 mb-2">Fellowships</p>
-          <ul className="space-y-1 text-gray-700">
-            {data.fellowships.map((f, i) => <li key={i}>{f}</li>)}
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Fellowships</p>
+          <ul className="space-y-2">
+            {data.fellowships.map((f, i) => (
+              <li key={i} className="flex gap-3 text-gray-800">
+                <span className="w-2 h-2 bg-brand-300 rounded-full shrink-0 mt-1.5" />
+                {f}
+              </li>
+            ))}
           </ul>
         </div>
       )}
@@ -86,7 +101,7 @@ function QualificationsBlock({ data }: { data: QualificationsSection }) {
 function SpecializationBlock({ data }: { data: SpecializationSection }) {
   return (
     <SectionBlock title="Specialization">
-      <p className="text-gray-800 font-medium mb-3">{data.primary}</p>
+      <p className="text-gray-900 font-semibold text-base mb-4">{data.primary}</p>
       {data.sub_specialties?.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {data.sub_specialties.map((s, i) => <Pill key={i} label={s} />)}
@@ -99,16 +114,24 @@ function SpecializationBlock({ data }: { data: SpecializationSection }) {
 function ExperienceBlock({ data }: { data: ExperienceSection }) {
   return (
     <SectionBlock title="Experience">
-      <div className="flex items-baseline gap-2 mb-4">
-        <span className="text-4xl font-bold text-brand-700">{data.years}</span>
-        <span className="text-gray-600">years of experience</span>
+      <div className="inline-flex items-center gap-4 bg-brand-50 border border-brand-100 rounded-xl px-6 py-4 mb-5">
+        <span className="text-5xl font-extrabold text-brand-700 leading-none">{data.years}</span>
+        <div className="text-left">
+          <p className="text-sm font-semibold text-brand-700 leading-tight">Years of</p>
+          <p className="text-sm font-semibold text-brand-700 leading-tight">Experience</p>
+        </div>
       </div>
       {data.current_affiliation && (
-        <p className="text-gray-800 font-medium mb-3">{data.current_affiliation}</p>
+        <p className="text-gray-800 font-semibold mb-3">{data.current_affiliation}</p>
       )}
       {data.hospitals?.length > 0 && (
-        <ul className="space-y-1 text-gray-700">
-          {data.hospitals.map((h, i) => <li key={i}>• {h}</li>)}
+        <ul className="space-y-2 text-gray-700">
+          {data.hospitals.map((h, i) => (
+            <li key={i} className="flex gap-3">
+              <span className="w-2 h-2 bg-brand-400 rounded-full shrink-0 mt-1.5" />
+              {h}
+            </li>
+          ))}
         </ul>
       )}
     </SectionBlock>
@@ -124,7 +147,7 @@ function ServicesBlock({ data }: { data: ServicesSection }) {
     <SectionBlock title="Services">
       {hasTreatments && (
         <div className="mb-5">
-          <p className="text-sm font-medium text-gray-500 mb-2">Treatments</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Treatments</p>
           <div className="flex flex-wrap gap-2">
             {data.treatments.map((t, i) => <Pill key={i} label={t} />)}
           </div>
@@ -132,7 +155,7 @@ function ServicesBlock({ data }: { data: ServicesSection }) {
       )}
       {hasProcedures && (
         <div className="mb-5">
-          <p className="text-sm font-medium text-gray-500 mb-2">Procedures</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Procedures</p>
           <div className="flex flex-wrap gap-2">
             {data.procedures.map((p, i) => <Pill key={i} label={p} />)}
           </div>
@@ -140,7 +163,7 @@ function ServicesBlock({ data }: { data: ServicesSection }) {
       )}
       {hasConsultation && (
         <div>
-          <p className="text-sm font-medium text-gray-500 mb-2">Consultation Types</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Consultation Types</p>
           <div className="flex flex-wrap gap-2">
             {data.consultation_types.map((c, i) => <Pill key={i} label={c} />)}
           </div>
@@ -153,23 +176,23 @@ function ServicesBlock({ data }: { data: ServicesSection }) {
 function ClinicBlock({ data }: { data: ClinicInfoSection }) {
   return (
     <SectionBlock title="Clinic Information">
-      <div className="space-y-3 text-gray-700">
+      <div className="space-y-3">
         {data.address && (
-          <div className="flex gap-2">
+          <div className="flex gap-3 bg-gray-50 rounded-xl p-3">
             <MapPin size={18} className="shrink-0 text-brand-600 mt-0.5" />
-            <span>{data.address}</span>
+            <span className="text-gray-700">{data.address}</span>
           </div>
         )}
         {data.timings && (
-          <div className="flex gap-2">
+          <div className="flex gap-3 bg-gray-50 rounded-xl p-3">
             <Clock size={18} className="shrink-0 text-brand-600 mt-0.5" />
-            <span>{data.timings}</span>
+            <span className="text-gray-700">{data.timings}</span>
           </div>
         )}
         {data.phone && (
-          <a href={`tel:${data.phone}`} className="flex gap-2 hover:text-brand-700">
+          <a href={`tel:${data.phone}`} className="flex gap-3 bg-gray-50 hover:bg-brand-50 rounded-xl p-3 transition-colors">
             <Phone size={18} className="shrink-0 text-brand-600 mt-0.5" />
-            {data.phone}
+            <span className="text-gray-700">{data.phone}</span>
           </a>
         )}
         {data.map_url && (
@@ -177,7 +200,7 @@ function ClinicBlock({ data }: { data: ClinicInfoSection }) {
             href={data.map_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex gap-2 text-brand-700 hover:underline underline-offset-2"
+            className="flex gap-3 bg-brand-50 hover:bg-brand-100 rounded-xl p-3 text-brand-700 transition-colors"
           >
             <ExternalLink size={18} className="shrink-0 mt-0.5" />
             View on Map
@@ -193,11 +216,11 @@ function AchievementsBlock({ data }: { data: AchievementsData }) {
   if (!all.length) return null
   return (
     <SectionBlock title="Achievements & Awards">
-      <ul className="space-y-2">
+      <ul className="space-y-3">
         {all.map((a, i) => (
-          <li key={i} className="flex gap-2 text-gray-700">
-            <span className="text-gold-500 shrink-0">★</span>
-            {a}
+          <li key={i} className="flex gap-3 items-start bg-gold-50 border border-gold-100 rounded-xl px-4 py-3">
+            <span className="text-gold-500 shrink-0 text-lg leading-snug">★</span>
+            <span className="text-gray-700 leading-relaxed">{a}</span>
           </li>
         ))}
       </ul>
@@ -210,19 +233,7 @@ function GalleryBlock({ data }: { data: GalleryData }) {
   if (!images.length) return null
   return (
     <SectionBlock title="Gallery">
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {images.map((src, i) => (
-          <div key={i} className="relative aspect-square rounded-lg overflow-hidden">
-            <Image
-              src={src}
-              alt={`Gallery image ${i + 1}`}
-              fill
-              sizes="(max-width: 768px) 50vw, 33vw"
-              className="object-cover"
-            />
-          </div>
-        ))}
-      </div>
+      <GalleryLightbox images={images} />
     </SectionBlock>
   )
 }
@@ -267,7 +278,7 @@ function SocialBlock({ data }: { data: SocialSection }) {
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 border border-gray-200 hover:border-brand-300 text-gray-600 hover:text-brand-700 px-4 py-2 rounded-lg text-sm transition-colors"
+            className="flex items-center gap-2 bg-gray-50 hover:bg-brand-50 border border-gray-200 hover:border-brand-300 text-gray-600 hover:text-brand-700 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors"
           >
             <ExternalLink size={14} />
             {label}
@@ -292,7 +303,7 @@ export default function ClassicSections({ sections }: SectionsProps) {
   const social = sections.social as SocialSection | undefined
 
   return (
-    <div>
+    <div className="bg-gray-50 py-6 space-y-4">
       {personal && <AboutBlock personal={personal} />}
       {qualifications && <QualificationsBlock data={qualifications} />}
       {specialization && <SpecializationBlock data={specialization} />}
