@@ -93,7 +93,7 @@ export const testimonialsSectionSchema = z.object({
 export type TestimonialsSectionInput = z.infer<typeof testimonialsSectionSchema>
 
 export const gallerySectionSchema = z.object({
-  images: z.string(),
+  images: z.array(z.string().url()),
 })
 export type GallerySectionInput = z.infer<typeof gallerySectionSchema>
 

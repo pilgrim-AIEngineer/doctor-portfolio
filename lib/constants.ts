@@ -34,6 +34,12 @@ export const OTP_LENGTH = 6
 export const AUTOSAVE_DEBOUNCE_MS = 1000
 export const ISR_REVALIDATE_SECONDS = 3600
 
+export const UPLOAD_MAX_SIZE_BYTES = 5 * 1024 * 1024 // 5 MB
+export const UPLOAD_ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const
+export const UPLOAD_GALLERY_MAX_IMAGES = 10
+export const CLOUDINARY_PROFILES_FOLDER = 'docfolio/profiles'
+export const CLOUDINARY_GALLERY_FOLDER = 'docfolio/gallery'
+
 export const SUBSCRIPTION_STATUS = {
   ACTIVE: 'active',
   CANCELLED: 'cancelled',
@@ -55,3 +61,9 @@ export const DASHBOARD_NAV = [
   { label: 'Billing',      shortLabel: 'Billing',  href: '/dashboard/billing' },
   { label: 'Settings',     shortLabel: 'Settings', href: '/dashboard/settings' },
 ] as const
+
+export const TEMPLATE_META = {
+  classic: { label: 'Classic', description: 'Clean, professional layout trusted by thousands of doctors.', tier: 'free' },
+  modern:  { label: 'Modern',  description: 'Sleek contemporary design with bold typography.',             tier: 'pro'  },
+  bold:    { label: 'Bold',    description: 'Vibrant and eye-catching — stand out from the crowd.',        tier: 'pro'  },
+} as const

@@ -7,6 +7,7 @@ import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import { personalSectionSchema, type PersonalSectionInput } from '@/lib/validations/profile'
 import SaveStatus from '../SaveStatus'
+import ProfilePhotoUpload from '../ProfilePhotoUpload'
 
 const INPUT = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent'
 const LABEL = 'block text-sm font-medium text-gray-700 mb-1'
@@ -23,7 +24,7 @@ export default function PersonalForm({ data }: { data: unknown }) {
       about: existing?.about ?? '',
     },
   })
-  const { register, watch, formState: { errors } } = form
+  const { register, watch, setValue, formState: { errors } } = form
   const status = useAutoSave(watch(), (d) => saveProfileSection('personal', d))
 
   return (
@@ -40,8 +41,11 @@ export default function PersonalForm({ data }: { data: unknown }) {
       </div>
 
       <div>
-        <label className={LABEL}>Profile photo URL</label>
-        <input type="url" {...register('photo')} className={INPUT} placeholder="https://…" />
+        <label className={LABEL}>Profile photo</label>
+        <ProfilePhotoUpload
+          value={watch('photo') ?? ''}
+          onChange={(url) => setValue('photo', url, { shouldDirty: true })}
+        />
         {errors.photo && <p className={ERROR}>{errors.photo.message}</p>}
       </div>
 

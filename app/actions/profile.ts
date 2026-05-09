@@ -1,6 +1,7 @@
 // Server actions for reading and writing doctor profile sections
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { createServerClient } from '@/lib/supabase/server'
 import type { SectionKey } from '@/types/Profile'
 
@@ -36,6 +37,7 @@ export async function saveProfileSection(
       return { error: 'Failed to save. Please try again.' }
     }
 
+    revalidatePath('/dashboard/profile')
     return { data: saved }
   } catch (err) {
     console.error('[saveProfileSection] unexpected', err)

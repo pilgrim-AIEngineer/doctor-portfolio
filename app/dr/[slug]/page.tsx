@@ -1,8 +1,16 @@
-// Public portfolio page at /dr/[slug] — ISR, SEO optimised
+// Public portfolio page at /dr/[slug] — ISR, SEO optimised, JSON-LD schema
+import { cache } from 'react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
-import { ISR_REVALIDATE_SECONDS } from '@/lib/constants'
+import { ISR_REVALIDATE_SECONDS, APP_URL } from '@/lib/constants'
+import type { Doctor } from '@/types/Doctor'
+import type { Template } from '@/types/Template'
+import type { SectionKey } from '@/types/Profile'
+import type { DoctorProfile } from '@/types/DoctorProfile'
+import ClassicTemplate from '@/components/templates/classic'
+import ModernTemplate from '@/components/templates/modern'
+import BoldTemplate from '@/components/templates/bold'
 
 export const revalidate = ISR_REVALIDATE_SECONDS
 
@@ -10,57 +18,123 @@ interface PageProps {
   params: { slug: string }
 }
 
+type PortfolioData = {
+  doctor: Doctor
+  sections: Partial<Record<SectionKey, unknown>>
+  template: Template
+} | null
+
+const DEFAULT_TEMPLATE: Template = {
+  id: 'classic',
+  name: 'classic',
+  preview_image: '',
+  is_active: true,
+}
+
 function getPublicSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   )
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+const fetchPortfolioData = cache(async (slug: string): Promise<PortfolioData> => {
   const supabase = getPublicSupabase()
-  const { data: doctor } = await supabase
+
+  const { data: doctor, error: doctorError } = await supabase
     .from('doctors')
-    .select('name, specialty')
-    .eq('slug', params.slug)
+    .select('id, name, email, phone, nmc_number, specialty, slug, plan, is_verified, created_at')
+    .eq('slug', slug)
     .single()
 
-  if (!doctor) return { title: 'Doctor Not Found' }
+  if (doctorError || !doctor) return null
+
+  const [sectionsRes, templateRes] = await Promise.all([
+    supabase.from('profiles').select('section_key, data').eq('doctor_id', doctor.id),
+    supabase
+      .from('doctor_templates')
+      .select('templates(id, name, preview_image, is_active)')
+      .eq('doctor_id', doctor.id)
+      .maybeSingle(),
+  ])
+
+  const sections: Partial<Record<SectionKey, unknown>> = {}
+  for (const row of sectionsRes.data ?? []) {
+    sections[row.section_key as SectionKey] = row.data
+  }
+
+  const rawTemplate = templateRes.data?.templates as unknown as Template | undefined
+  const template: Template = rawTemplate ?? DEFAULT_TEMPLATE
+
+  return { doctor: doctor as Doctor, sections, template }
+})
+
+export async function generateStaticParams() {
+  const supabase = getPublicSupabase()
+  const { data } = await supabase.from('doctors').select('slug')
+  return (data ?? []).map((d) => ({ slug: d.slug as string }))
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const data = await fetchPortfolioData(params.slug)
+  if (!data) return { title: 'Doctor Not Found' }
+
+  const { doctor, sections } = data
+  const personal = sections.personal as { photo?: string; tagline?: string } | undefined
 
   return {
-    title: `Dr. ${doctor.name} — ${doctor.specialty}`,
-    description: `Book an appointment with Dr. ${doctor.name}, ${doctor.specialty}. View profile on DocFolio.`,
+    title: `Dr. ${doctor.name} — ${doctor.specialty} | DocFolio`,
+    description:
+      personal?.tagline ??
+      `Book an appointment with Dr. ${doctor.name}, ${doctor.specialty}. View profile on DocFolio.`,
     openGraph: {
-      title: `Dr. ${doctor.name}`,
-      description: `${doctor.specialty} | DocFolio`,
+      title: `Dr. ${doctor.name} — ${doctor.specialty}`,
+      description: personal?.tagline ?? `${doctor.specialty} specialist on DocFolio`,
       type: 'profile',
+      url: `${APP_URL}/dr/${doctor.slug}`,
     },
   }
 }
 
+function buildJsonLd(doctor: Doctor, sections: Partial<Record<SectionKey, unknown>>) {
+  const personal = sections.personal as { photo?: string } | undefined
+  const clinic = sections.clinic_info as { address?: string } | undefined
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Physician',
+    name: `Dr. ${doctor.name}`,
+    medicalSpecialty: doctor.specialty,
+    telephone: doctor.phone,
+    url: `${APP_URL}/dr/${doctor.slug}`,
+    ...(personal?.photo ? { image: personal.photo } : {}),
+    ...(clinic?.address
+      ? { address: { '@type': 'PostalAddress', streetAddress: clinic.address } }
+      : {}),
+  }
+}
+
 export default async function DoctorPortfolioPage({ params }: PageProps) {
-  const supabase = getPublicSupabase()
+  const data = await fetchPortfolioData(params.slug)
+  if (!data) notFound()
 
-  const { data: doctor, error } = await supabase
-    .from('doctors')
-    .select('id, name, specialty, slug, nmc_number, is_verified')
-    .eq('slug', params.slug)
-    .single()
-
-  if (error || !doctor) notFound()
+  const { doctor, sections, template } = data
+  const jsonLd = buildJsonLd(doctor, sections)
+  const profile: DoctorProfile = { doctor, sections, template }
 
   return (
-    <main>
-      {/* Template renderer replaces this once feat/templates lands */}
-      <div className="max-w-3xl mx-auto p-6">
-        <h1 className="text-3xl font-bold text-gray-900">Dr. {doctor.name}</h1>
-        <p className="text-gray-600 mt-1">{doctor.specialty}</p>
-        {doctor.is_verified && (
-          <span className="inline-flex items-center gap-1 mt-2 text-xs text-green-700 bg-green-50 px-2 py-1 rounded-full">
-            ✓ NMC Verified
-          </span>
-        )}
-      </div>
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {template.name === 'modern' ? (
+        <ModernTemplate profile={profile} />
+      ) : template.name === 'bold' ? (
+        <BoldTemplate profile={profile} />
+      ) : (
+        <ClassicTemplate profile={profile} />
+      )}
+    </>
   )
 }
