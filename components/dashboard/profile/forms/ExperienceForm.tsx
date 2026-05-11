@@ -1,33 +1,105 @@
 // ExperienceForm — edits the "experience" profile section
 'use client'
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
-import { experienceSectionSchema, type ExperienceSectionInput } from '@/lib/validations/profile'
+import type { HospitalEntry } from '@/types/Profile'
+import CardArrayInput from '../CardArrayInput'
 import SaveStatus from '../SaveStatus'
 
 const INPUT = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent'
-const LABEL = 'block text-sm font-medium text-gray-700 mb-1'
-const ERROR = 'mt-1 text-xs text-red-600'
+const LABEL = 'block text-xs font-medium text-gray-600 mb-1'
+
+const emptyEntry = (): HospitalEntry => ({
+  role: '',
+  hospital: '',
+  location: '',
+  from_year: new Date().getFullYear(),
+  to_year: null,
+})
+
+function HospitalCard({
+  item,
+  index,
+  onChange,
+}: {
+  item: HospitalEntry
+  index: number
+  onChange: (index: number, updated: HospitalEntry) => void
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      <div className="col-span-2">
+        <label className={LABEL}>Role / Designation</label>
+        <input
+          type="text"
+          value={item.role}
+          onChange={(e) => onChange(index, { ...item, role: e.target.value })}
+          className={INPUT}
+          placeholder="e.g. Senior Consultant"
+        />
+      </div>
+      <div>
+        <label className={LABEL}>Hospital / Institution</label>
+        <input
+          type="text"
+          value={item.hospital}
+          onChange={(e) => onChange(index, { ...item, hospital: e.target.value })}
+          className={INPUT}
+          placeholder="e.g. Apollo Hospitals"
+        />
+      </div>
+      <div>
+        <label className={LABEL}>City</label>
+        <input
+          type="text"
+          value={item.location}
+          onChange={(e) => onChange(index, { ...item, location: e.target.value })}
+          className={INPUT}
+          placeholder="e.g. Mumbai"
+        />
+      </div>
+      <div>
+        <label className={LABEL}>From year</label>
+        <input
+          type="number"
+          value={item.from_year}
+          onChange={(e) => onChange(index, { ...item, from_year: parseInt(e.target.value) || 2000 })}
+          className={INPUT}
+          min={1950}
+          max={new Date().getFullYear()}
+        />
+      </div>
+      <div>
+        <label className={LABEL}>To year <span className="text-gray-400">(blank = present)</span></label>
+        <input
+          type="number"
+          value={item.to_year ?? ''}
+          onChange={(e) =>
+            onChange(index, { ...item, to_year: e.target.value ? parseInt(e.target.value) : null })
+          }
+          className={INPUT}
+          min={1950}
+          max={new Date().getFullYear()}
+          placeholder="Present"
+        />
+      </div>
+    </div>
+  )
+}
 
 export default function ExperienceForm({ data }: { data: unknown }) {
-  const existing = data as { years?: number; current_affiliation?: string; hospitals?: string[] } | undefined
-  const form = useForm<ExperienceSectionInput>({
-    resolver: zodResolver(experienceSectionSchema),
-    defaultValues: {
-      years: existing?.years ?? 0,
-      current_affiliation: existing?.current_affiliation ?? '',
-      hospitals: (existing?.hospitals ?? []).join('\n'),
-    },
-  })
-  const { register, watch, formState: { errors } } = form
-  const status = useAutoSave(watch(), (d) => saveProfileSection('experience', {
-    years: d.years,
-    current_affiliation: d.current_affiliation,
-    hospitals: d.hospitals.split('\n').filter(Boolean),
-  }))
+  const existing = data as { hospitals?: HospitalEntry[]; current_affiliation?: string } | undefined
+  const [hospitals, setHospitals] = useState<HospitalEntry[]>(existing?.hospitals ?? [])
+  const [currentAffiliation, setCurrentAffiliation] = useState(existing?.current_affiliation ?? '')
+
+  function updateHospital(index: number, updated: HospitalEntry) {
+    setHospitals((prev) => prev.map((h, i) => (i === index ? updated : h)))
+  }
+
+  const formData = { hospitals, current_affiliation: currentAffiliation }
+  const status = useAutoSave(formData, (d) => saveProfileSection('experience', d))
 
   return (
     <div className="space-y-5">
@@ -37,19 +109,25 @@ export default function ExperienceForm({ data }: { data: unknown }) {
       </div>
 
       <div>
-        <label className={LABEL}>Years of experience</label>
-        <input type="number" {...register('years', { valueAsNumber: true })} min={0} max={60} className={INPUT} />
-        {errors.years && <p className={ERROR}>{errors.years.message}</p>}
+        <label className="block text-sm font-medium text-gray-700 mb-1">Current affiliation</label>
+        <input
+          type="text"
+          value={currentAffiliation}
+          onChange={(e) => setCurrentAffiliation(e.target.value)}
+          className={INPUT}
+          placeholder="e.g. Apollo Hospitals, Mumbai"
+        />
       </div>
 
       <div>
-        <label className={LABEL}>Current affiliation</label>
-        <input type="text" {...register('current_affiliation')} className={INPUT} placeholder="e.g. Apollo Hospitals, Mumbai" />
-      </div>
-
-      <div>
-        <label className={LABEL}>Hospitals worked at <span className="text-gray-400 font-normal">(one per line)</span></label>
-        <textarea {...register('hospitals')} rows={4} className={`${INPUT} resize-y`} placeholder={"Apollo Hospitals, Mumbai\nFortis, Delhi"} />
+        <p className="text-sm font-medium text-gray-700 mb-3">Positions held</p>
+        <CardArrayInput
+          items={hospitals}
+          onAdd={() => setHospitals((prev) => [...prev, emptyEntry()])}
+          onRemove={(i) => setHospitals((prev) => prev.filter((_, idx) => idx !== i))}
+          renderCard={(item, i) => <HospitalCard item={item} index={i} onChange={updateHospital} />}
+          addLabel="Add position"
+        />
       </div>
     </div>
   )
