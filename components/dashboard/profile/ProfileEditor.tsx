@@ -18,6 +18,9 @@ import AppointmentForm from './forms/AppointmentForm'
 import InsuranceForm from './forms/InsuranceForm'
 import LanguagesForm from './forms/LanguagesForm'
 import SocialForm from './forms/SocialForm'
+import FeesForm from './forms/FeesForm'
+import LocationsForm from './forms/LocationsForm'
+import FAQForm from './forms/FAQForm'
 import EmptySectionState from '@/components/dashboard/EmptySectionState'
 
 interface FormProps { data: unknown }
@@ -38,6 +41,9 @@ const FORMS: Record<SectionKey, React.ComponentType<FormProps>> = {
   insurance: InsuranceForm,
   languages: LanguagesForm,
   social: SocialForm,
+  fees: FeesForm,
+  locations: LocationsForm,
+  faq: FAQForm,
 }
 
 const TABS: Array<{ key: SectionKey; label: string; fullLabel: string }> = [
@@ -56,6 +62,9 @@ const TABS: Array<{ key: SectionKey; label: string; fullLabel: string }> = [
   { key: 'insurance',      label: 'Insurance', fullLabel: 'insurance info' },
   { key: 'languages',      label: 'Languages', fullLabel: 'languages' },
   { key: 'social',         label: 'Social',    fullLabel: 'social links' },
+  { key: 'fees',           label: 'Fees',      fullLabel: 'consultation fees' },
+  { key: 'locations',      label: 'Locations', fullLabel: 'clinic locations' },
+  { key: 'faq',            label: 'FAQ',       fullLabel: 'frequently asked questions' },
 ]
 
 interface Props {
