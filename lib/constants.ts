@@ -27,7 +27,69 @@ export const SECTION_KEYS = [
   'insurance',
   'languages',
   'social',
+  'fees',
+  'locations',
+  'faq',
 ] as const
+
+export const PROFILE_GROUPS = [
+  {
+    key: 'identity',
+    label: 'Identity',
+    sections: ['personal', 'specialization', 'qualifications', 'registration'] as const,
+  },
+  {
+    key: 'practice',
+    label: 'Practice',
+    sections: ['experience', 'services', 'clinic_info', 'fees', 'locations'] as const,
+  },
+  {
+    key: 'credibility',
+    label: 'Credibility',
+    sections: ['achievements', 'research', 'gallery'] as const,
+  },
+  {
+    key: 'patient',
+    label: 'Patient',
+    sections: ['testimonials', 'faq', 'insurance', 'languages'] as const,
+  },
+  {
+    key: 'connect',
+    label: 'Connect',
+    sections: ['appointment', 'social'] as const,
+  },
+] as const
+
+export const PRO_ONLY_SECTIONS: ReadonlyArray<string> = ['fees', 'locations', 'faq']
+
+export const SECTION_LABELS: Record<string, string> = {
+  personal: 'Personal',
+  qualifications: 'Qualifications',
+  registration: 'Registration',
+  specialization: 'Specialization',
+  experience: 'Experience',
+  services: 'Services',
+  achievements: 'Achievements',
+  research: 'Research',
+  testimonials: 'Testimonials',
+  gallery: 'Gallery',
+  clinic_info: 'Clinic Info',
+  appointment: 'Appointment',
+  insurance: 'Insurance',
+  languages: 'Languages',
+  social: 'Social',
+  fees: 'Fees',
+  locations: 'Locations',
+  faq: 'FAQ',
+}
+
+export const SECTION_ORDER_DEBOUNCE_MS = 300
+export const ABOUT_MAX_CHARS = 500
+export const LOCATIONS_MAX = 5
+export const FAQ_MAX_ITEMS = 10
+export const FEE_NOTE_MAX_CHARS = 200
+export const FAQ_ANSWER_MAX_CHARS = 400
+export const TESTIMONIAL_REVIEW_MAX_CHARS = 300
 
 export const PHONE_PREFIX = '+91'
 export const OTP_LENGTH = 6

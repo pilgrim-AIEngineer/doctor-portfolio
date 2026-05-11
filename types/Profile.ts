@@ -8,19 +8,34 @@ export interface ProfileSection {
   doctor_id: string
   section_key: SectionKey
   data: unknown
+  is_visible: boolean
+  display_order: number
   updated_at: string
+}
+
+export interface SectionMeta {
+  section_key: SectionKey
+  is_visible: boolean
+  display_order: number
 }
 
 export interface PersonalSection {
   name: string
   photo?: string
+  cover_image?: string
   tagline?: string
   about?: string
 }
 
+export interface QualificationEntry {
+  degree: string
+  institution: string
+  year: number
+}
+
 export interface QualificationsSection {
-  degrees: string[]
-  fellowships: string[]
+  degrees: QualificationEntry[]
+  fellowships: QualificationEntry[]
 }
 
 export interface RegistrationSection {
@@ -34,9 +49,16 @@ export interface SpecializationSection {
   sub_specialties: string[]
 }
 
+export interface HospitalEntry {
+  role: string
+  hospital: string
+  location: string
+  from_year: number
+  to_year: number | null
+}
+
 export interface ExperienceSection {
-  years: number
-  hospitals: string[]
+  hospitals: HospitalEntry[]
   current_affiliation: string
 }
 
@@ -51,6 +73,44 @@ export interface ClinicInfoSection {
   map_url?: string
   timings: string
   phone: string
+}
+
+export interface LocationEntry {
+  name: string
+  address: string
+  phone: string
+  timings: string
+  map_url?: string
+  is_primary: boolean
+}
+
+export interface LocationsSection {
+  locations: LocationEntry[]
+}
+
+export interface FeesSection {
+  consultation_fee: number
+  followup_fee?: number
+  fee_note?: string
+}
+
+export interface FAQEntry {
+  question: string
+  answer: string
+}
+
+export interface FAQSection {
+  items: FAQEntry[]
+}
+
+export interface TestimonialEntry {
+  patient_name: string
+  review: string
+  rating: 1 | 2 | 3 | 4 | 5
+}
+
+export interface TestimonialsSection {
+  reviews: TestimonialEntry[]
 }
 
 export interface AppointmentSection {
