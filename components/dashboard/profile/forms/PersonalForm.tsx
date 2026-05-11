@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import { personalSectionSchema, type PersonalSectionInput } from '@/lib/validations/profile'
+import { ABOUT_MAX_CHARS } from '@/lib/constants'
 import SaveStatus from '../SaveStatus'
 import ProfilePhotoUpload from '../ProfilePhotoUpload'
 
@@ -20,11 +21,13 @@ export default function PersonalForm({ data }: { data: unknown }) {
     defaultValues: {
       name: existing?.name ?? '',
       photo: existing?.photo ?? '',
+      cover_image: existing?.cover_image ?? '',
       tagline: existing?.tagline ?? '',
       about: existing?.about ?? '',
     },
   })
   const { register, watch, setValue, formState: { errors } } = form
+  const about = watch('about') ?? ''
   const status = useAutoSave(watch(), (d) => saveProfileSection('personal', d))
 
   return (
@@ -50,14 +53,34 @@ export default function PersonalForm({ data }: { data: unknown }) {
       </div>
 
       <div>
+        <label className={LABEL}>Cover image <span className="text-gray-400 font-normal">(banner for Bold &amp; Oncology templates)</span></label>
+        <ProfilePhotoUpload
+          value={watch('cover_image') ?? ''}
+          onChange={(url) => setValue('cover_image', url, { shouldDirty: true })}
+        />
+        {errors.cover_image && <p className={ERROR}>{errors.cover_image.message}</p>}
+      </div>
+
+      <div>
         <label className={LABEL}>Tagline <span className="text-gray-400 font-normal">(max 120 chars)</span></label>
         <input type="text" {...register('tagline')} className={INPUT} placeholder="e.g. 15+ years in cardiac surgery" />
         {errors.tagline && <p className={ERROR}>{errors.tagline.message}</p>}
       </div>
 
       <div>
-        <label className={LABEL}>About</label>
-        <textarea {...register('about')} rows={5} className={`${INPUT} resize-y`} placeholder="Write a short bio…" />
+        <div className="flex items-center justify-between mb-1">
+          <label className={LABEL} style={{ marginBottom: 0 }}>About</label>
+          <span className={`text-xs ${about.length > ABOUT_MAX_CHARS * 0.9 ? 'text-amber-500' : 'text-gray-400'}`}>
+            {about.length}/{ABOUT_MAX_CHARS}
+          </span>
+        </div>
+        <textarea
+          {...register('about')}
+          rows={5}
+          maxLength={ABOUT_MAX_CHARS}
+          className={`${INPUT} resize-y`}
+          placeholder="Write a short bio…"
+        />
         {errors.about && <p className={ERROR}>{errors.about.message}</p>}
       </div>
     </div>
