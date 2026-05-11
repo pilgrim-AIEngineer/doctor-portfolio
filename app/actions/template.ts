@@ -1,7 +1,10 @@
 // Server actions for fetching and saving a doctor's template selection
 'use server'
 
-import { createServerClient } from '@/lib/supabase/server'
+import { TEMPLATE_META } from '@/lib/constants'
+import { createServerClient, createServiceClient } from '@/lib/supabase/server'
+import type { Doctor } from '@/types/Doctor'
+import type { SectionKey } from '@/types/Profile'
 import type { Template } from '@/types/Template'
 
 interface TemplateData {
@@ -10,8 +13,42 @@ interface TemplateData {
   plan: 'free' | 'pro'
 }
 
+interface PreviewProfileData {
+  doctor: Doctor
+  sections: Partial<Record<SectionKey, unknown>>
+  template: Template
+}
+
+const DEFAULT_TEMPLATE: Template = {
+  id: 'classic',
+  name: 'classic',
+  preview_image: '',
+  is_active: true,
+}
+
+async function ensureTemplateCatalog() {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return
+
+  const supabase = createServiceClient()
+  const rows = Object.keys(TEMPLATE_META).map((name) => ({
+    name,
+    preview_image: '',
+    is_active: true,
+  }))
+
+  const { error } = await supabase
+    .from('templates')
+    .upsert(rows, { onConflict: 'name', ignoreDuplicates: true })
+
+  if (error) {
+    console.error('[ensureTemplateCatalog]', error.message)
+  }
+}
+
 export async function getTemplateData(): Promise<{ data?: TemplateData; error?: string }> {
   try {
+    await ensureTemplateCatalog()
+
     const supabase = createServerClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) return { error: 'Not authenticated' }
@@ -46,6 +83,8 @@ export async function getTemplateData(): Promise<{ data?: TemplateData; error?: 
 
 export async function selectTemplate(templateId: string): Promise<{ data?: boolean; error?: string }> {
   try {
+    await ensureTemplateCatalog()
+
     const supabase = createServerClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) return { error: 'Not authenticated' }
@@ -76,6 +115,55 @@ export async function selectTemplate(templateId: string): Promise<{ data?: boole
     return { data: true }
   } catch (err) {
     console.error('[selectTemplate] unexpected', err)
+    return { error: 'Unexpected error. Please try again.' }
+  }
+}
+
+export async function getPreviewProfileData(): Promise<{ data?: PreviewProfileData; error?: string }> {
+  try {
+    const supabase = createServerClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) return { error: 'Not authenticated' }
+
+    const [doctorResult, sectionsResult, templateResult] = await Promise.all([
+      supabase
+        .from('doctors')
+        .select('id, name, email, phone, nmc_number, specialty, slug, plan, is_verified, is_admin, is_published, created_at')
+        .eq('id', user.id)
+        .single(),
+      supabase.from('profiles').select('section_key, data').eq('doctor_id', user.id),
+      supabase
+        .from('doctor_templates')
+        .select('templates(id, name, preview_image, is_active)')
+        .eq('doctor_id', user.id)
+        .maybeSingle(),
+    ])
+
+    if (doctorResult.error) {
+      console.error('[getPreviewProfileData] doctor', doctorResult.error.message)
+      return { error: 'Failed to load doctor profile.' }
+    }
+    if (sectionsResult.error) {
+      console.error('[getPreviewProfileData] sections', sectionsResult.error.message)
+      return { error: 'Failed to load profile sections.' }
+    }
+
+    const sections: Partial<Record<SectionKey, unknown>> = {}
+    for (const row of sectionsResult.data ?? []) {
+      sections[row.section_key as SectionKey] = row.data
+    }
+
+    const rawTemplate = templateResult.data?.templates as unknown as Template | undefined
+
+    return {
+      data: {
+        doctor: doctorResult.data as Doctor,
+        sections,
+        template: rawTemplate ?? DEFAULT_TEMPLATE,
+      },
+    }
+  } catch (err) {
+    console.error('[getPreviewProfileData] unexpected', err)
     return { error: 'Unexpected error. Please try again.' }
   }
 }

@@ -50,6 +50,12 @@ preset templates.
 - Free: 1 template, subdomain only, basic sections
 - Pro (₹499/month): all templates, custom domain, analytics, all sections
 
+## Portfolio Templates
+- Classic: free default template for all doctors
+- Modern: Pro template with contemporary styling
+- Bold: Pro template with high-impact editorial styling
+- Oncology Pro: Pro template for cancer specialists, focused on treatment taxonomy, trust signals, WhatsApp, callback requests, clinic access, and oncology-specific patient conversion
+
 ## URL Structure
 - /login — doctor login/signup
 - /dashboard — doctor's management area

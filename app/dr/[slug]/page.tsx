@@ -11,6 +11,7 @@ import type { DoctorProfile } from '@/types/DoctorProfile'
 import ClassicTemplate from '@/components/templates/classic'
 import ModernTemplate from '@/components/templates/modern'
 import BoldTemplate from '@/components/templates/bold'
+import OncologyTemplate from '@/components/templates/oncology'
 import NotPublished from '@/components/portfolio/NotPublished'
 
 export const revalidate = ISR_REVALIDATE_SECONDS
@@ -139,6 +140,8 @@ export default async function DoctorPortfolioPage({ params }: PageProps) {
         <ModernTemplate profile={profile} />
       ) : template.name === 'bold' ? (
         <BoldTemplate profile={profile} />
+      ) : template.name === 'oncology' ? (
+        <OncologyTemplate profile={profile} />
       ) : (
         <ClassicTemplate profile={profile} />
       )}

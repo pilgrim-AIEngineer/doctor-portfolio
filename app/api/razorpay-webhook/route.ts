@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     switch (event.event) {
       case 'subscription.activated':
       case 'subscription.charged': {
-        const { id, status } = event.payload.subscription.entity
+        const { id } = event.payload.subscription.entity
         await supabase
           .from('subscriptions')
           .update({ status: SUBSCRIPTION_STATUS.ACTIVE })

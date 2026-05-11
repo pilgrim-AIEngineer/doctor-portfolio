@@ -5,6 +5,7 @@ import type { ProfileSection, SectionKey } from '@/types/Profile'
 import ProfileEditor from '@/components/dashboard/profile/ProfileEditor'
 
 export const metadata: Metadata = { title: 'Edit Profile' }
+export const dynamic = 'force-dynamic'
 
 export default async function ProfilePage() {
   const result = await getProfileSections()

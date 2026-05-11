@@ -1,10 +1,10 @@
-// Bold template appointment CTA — gold sticky bar (mobile) + gold inline section (desktop)
+// Bold template appointment CTA - high-contrast gold booking bar and form
 'use client'
 
-import { Phone, ExternalLink, CalendarDays } from 'lucide-react'
-import { formatIndianPhone } from '@/lib/utils'
+import { CalendarDays, ExternalLink, Phone } from 'lucide-react'
 import type { AppointmentSection } from '@/types/Profile'
 import type { Doctor } from '@/types/Doctor'
+import { getContactLinks } from '@/components/templates/shared'
 import BookingForm from '@/components/templates/classic/BookingForm'
 
 interface AppointmentCTAProps {
@@ -13,99 +13,84 @@ interface AppointmentCTAProps {
 }
 
 export default function BoldAppointmentCTA({ appointment, doctor }: AppointmentCTAProps) {
-  const rawPhone = appointment?.whatsapp ?? doctor.phone
-  const formattedPhone = formatIndianPhone(rawPhone)
-  const waNumber = formattedPhone.replace('+', '')
-  const waText = encodeURIComponent(
-    `Hello Dr. ${doctor.name}, I would like to book an appointment.`,
-  )
-  const waUrl = `https://wa.me/${waNumber}?text=${waText}`
-  const telUrl = `tel:${formattedPhone}`
-  const formEnabled = appointment?.booking_form_enabled === true
+  const contact = getContactLinks(appointment, doctor)
 
   return (
     <>
-      {/* Mobile: inline form (above sticky bar) */}
-      {formEnabled && (
-        <section id="bold-book-form" className="md:hidden max-w-3xl mx-auto px-6 pt-8 pb-4 bg-navy">
-          <h2 className="font-serif text-xl font-bold text-white mb-1">Book an Appointment</h2>
-          <p className="text-sm text-gray-400 mb-2">Fill in your details and the doctor will get back to you.</p>
-          <BookingForm doctorId={doctor.id} doctorEmail={doctor.email ?? ''} />
+      {contact.formEnabled && (
+        <section id="bold-book-form" className="md:hidden bg-navy px-6 pb-5">
+          <BookingPanel doctor={doctor} contact={contact} compact />
         </section>
       )}
 
-      {/* Mobile: gold sticky bar */}
-      <div className="fixed bottom-0 left-0 right-0 md:hidden bg-navy-dark border-t-2 border-gold-300 px-4 py-3 z-50">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-gold-300 bg-navy-dark px-4 py-3 md:hidden">
         <div className="flex gap-2">
-          <a
-            href={waUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`flex items-center justify-center gap-2 ${formEnabled ? 'flex-1' : 'w-full'} bg-gold-300 hover:bg-gold-400 text-navy py-3 rounded-xl font-bold text-sm transition-colors`}
-          >
+          <a href={contact.waUrl} target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-2 bg-gold-300 py-3 text-sm font-bold text-navy">
             <Phone size={16} />
             WhatsApp
           </a>
-          {formEnabled && (
-            <a
-              href="#bold-book-form"
-              className="flex-1 flex items-center justify-center gap-2 border-2 border-gold-300 text-gold-300 hover:bg-gold-300/10 py-3 rounded-xl font-bold text-sm transition-colors"
-            >
+          {contact.formEnabled && (
+            <a href="#bold-book-form" className="flex flex-1 items-center justify-center gap-2 border border-gold-300 py-3 text-sm font-bold text-gold-300">
               <CalendarDays size={16} />
-              Book Appointment
+              Book
             </a>
           )}
         </div>
-        {appointment?.practo_url && (
-          <a
-            href={appointment.practo_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block text-center mt-2 text-xs text-gold-300 underline underline-offset-2"
-          >
-            Book on Practo
-          </a>
-        )}
       </div>
 
-      {/* Desktop: inline gold section */}
-      <section id="bold-book-form" className="hidden md:block bg-navy border-t border-white/10">
-        <div className="max-w-3xl mx-auto px-6 py-12">
-          <h2 className="font-serif text-2xl font-bold text-white mb-5">Book an Appointment</h2>
-          <div className="flex flex-wrap gap-3 mb-6">
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 bg-gold-300 hover:bg-gold-400 text-navy px-5 py-2.5 rounded-lg font-bold text-sm transition-colors"
-            >
-              <Phone size={16} />
-              WhatsApp
-            </a>
-            <a
-              href={telUrl}
-              className="flex items-center gap-2 border border-gold-300 text-gold-300 hover:bg-gold-300/10 px-5 py-2.5 rounded-lg font-medium text-sm transition-colors"
-            >
-              <Phone size={16} />
-              Call Now
-            </a>
-            {appointment?.practo_url && (
-              <a
-                href={appointment.practo_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 border border-gold-300/50 text-gold-300/80 hover:border-gold-300 hover:text-gold-300 hover:bg-gold-300/10 px-5 py-2.5 rounded-lg font-medium text-sm transition-colors"
-              >
-                <ExternalLink size={16} />
-                Book on Practo
-              </a>
-            )}
-          </div>
-          {formEnabled && (
-            <BookingForm doctorId={doctor.id} doctorEmail={doctor.email ?? ''} />
-          )}
-        </div>
+      <section id="bold-book-form" className="hidden border-t border-gold-300/20 bg-navy-dark px-6 py-14 md:block">
+        <BookingPanel doctor={doctor} contact={contact} />
       </section>
     </>
+  )
+}
+
+function BookingPanel({
+  doctor,
+  contact,
+  compact = false,
+}: {
+  doctor: Doctor
+  contact: ReturnType<typeof getContactLinks>
+  compact?: boolean
+}) {
+  return (
+    <div className="mx-auto max-w-7xl border border-gold-300/30 bg-navy p-6 shadow-gold md:grid md:grid-cols-[0.8fr_1fr] md:gap-8 md:p-8">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-[0.28em] text-gold-300">Appointment</p>
+        <h2 className="mt-3 font-serif text-4xl font-bold text-white">
+          Private consultation request
+        </h2>
+        <p className="mt-4 max-w-xl leading-7 text-gray-300">
+          Contact Dr. {doctor.name} through WhatsApp, phone, or a callback request.
+        </p>
+        <div className="mt-7 flex flex-wrap gap-3">
+          <a href={contact.waUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-gold-300 px-5 py-3 text-sm font-bold text-navy transition hover:bg-gold-400">
+            <Phone size={16} />
+            WhatsApp
+          </a>
+          <a href={contact.telUrl} className="inline-flex items-center gap-2 border border-gold-300 px-5 py-3 text-sm font-semibold text-gold-300 transition hover:bg-gold-300/10">
+            <Phone size={16} />
+            Call Now
+          </a>
+          {contact.practoUrl && (
+            <a href={contact.practoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-gold-300/50 px-5 py-3 text-sm font-semibold text-gold-300 transition hover:bg-gold-300/10">
+              <ExternalLink size={16} />
+              Practo
+            </a>
+          )}
+        </div>
+      </div>
+      {contact.formEnabled && !compact && (
+        <div className="mt-8 bg-ivory p-5 md:mt-0">
+          <BookingForm doctorId={doctor.id} doctorEmail={doctor.email ?? ''} />
+        </div>
+      )}
+      {contact.formEnabled && compact && (
+        <div className="mt-5 bg-ivory p-5">
+          <BookingForm doctorId={doctor.id} doctorEmail={doctor.email ?? ''} />
+        </div>
+      )}
+    </div>
   )
 }

@@ -1,11 +1,11 @@
-// Modern template appointment CTA — circular FAB fixed bottom-right, opens WhatsApp or booking sheet
+// Modern template appointment CTA - floating actions with animated booking sheet
 'use client'
 
 import { useState } from 'react'
-import { CalendarDays, Phone, ExternalLink, X } from 'lucide-react'
-import { formatIndianPhone } from '@/lib/utils'
+import { CalendarDays, ExternalLink, Phone, X } from 'lucide-react'
 import type { AppointmentSection } from '@/types/Profile'
 import type { Doctor } from '@/types/Doctor'
+import { getContactLinks } from '@/components/templates/shared'
 import BookingForm from '@/components/templates/classic/BookingForm'
 
 interface AppointmentCTAProps {
@@ -13,72 +13,57 @@ interface AppointmentCTAProps {
   doctor: Doctor
 }
 
-const fabClass =
-  'w-14 h-14 rounded-full bg-brand-600 hover:bg-brand-700 text-white shadow-xl flex items-center justify-center transition-colors focus:outline-none focus:ring-4 focus:ring-brand-300'
-
 export default function ModernAppointmentCTA({ appointment, doctor }: AppointmentCTAProps) {
   const [formOpen, setFormOpen] = useState(false)
-
-  const rawPhone = appointment?.whatsapp ?? doctor.phone
-  const waNumber = formatIndianPhone(rawPhone).replace('+', '')
-  const waText = encodeURIComponent(
-    `Hello Dr. ${doctor.name}, I would like to book an appointment.`,
-  )
-  const waUrl = `https://wa.me/${waNumber}?text=${waText}`
-  const formEnabled = appointment?.booking_form_enabled === true
+  const contact = getContactLinks(appointment, doctor)
 
   return (
     <>
-      {/* Floating action button — fixed bottom-right on all breakpoints */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
-        {appointment?.practo_url && (
+      <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
+        {contact.practoUrl && (
           <a
-            href={appointment.practo_url}
+            href={contact.practoUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 bg-white border border-brand-200 text-brand-700 text-sm font-medium px-4 py-2 rounded-full shadow-lg hover:bg-brand-50 transition-colors"
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-modern-panel/90 px-4 py-2 text-sm font-semibold text-cyan-100 shadow-glass backdrop-blur transition hover:bg-white/10"
           >
             <ExternalLink size={14} />
             Practo
           </a>
         )}
-        {formEnabled ? (
-          <button type="button" onClick={() => setFormOpen(true)} className={fabClass} aria-label="Book appointment">
-            <CalendarDays size={22} />
-          </button>
-        ) : (
-          <a href={waUrl} target="_blank" rel="noopener noreferrer" className={fabClass} aria-label="WhatsApp">
-            <Phone size={22} />
+        <div className="flex rounded-full border border-white/10 bg-modern-panel/90 p-1 shadow-glass backdrop-blur">
+          <a href={contact.waUrl} target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500 text-white transition hover:bg-green-600" aria-label="WhatsApp">
+            <Phone size={20} />
           </a>
-        )}
+          {contact.formEnabled && (
+            <button type="button" onClick={() => setFormOpen(true)} className="ml-1 flex h-12 w-12 items-center justify-center rounded-full bg-cyan-300 text-modern-ink transition hover:bg-cyan-200" aria-label="Book appointment">
+              <CalendarDays size={20} />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Bottom sheet — visible only when formOpen */}
+      <section id="modern-book-form" className="sr-only" aria-hidden="true" />
+
       {formOpen && (
-        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/50"
+        <div className="fixed inset-0 z-50 flex items-end justify-center md:items-center">
+          <button
+            type="button"
+            className="absolute inset-0 bg-modern-ink/80 backdrop-blur-sm"
             onClick={() => setFormOpen(false)}
-            aria-hidden="true"
+            aria-label="Close booking form"
           />
-          <div className="relative w-full md:max-w-md bg-white rounded-t-2xl md:rounded-2xl px-6 pt-6 pb-8 shadow-2xl">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Book an Appointment</h2>
-              <button
-                type="button"
-                onClick={() => setFormOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
-                aria-label="Close"
-              >
-                <X size={20} />
+          <div className="relative w-full max-w-lg animate-template-rise rounded-t-[2rem] border border-white/10 bg-white p-6 shadow-glass md:rounded-[2rem]">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="text-sm font-bold uppercase text-brand-700">Appointment</p>
+                <h2 className="text-2xl font-semibold text-gray-950">Book with Dr. {doctor.name}</h2>
+              </div>
+              <button type="button" onClick={() => setFormOpen(false)} className="rounded-full bg-gray-100 p-2 text-gray-500 transition hover:bg-gray-200" aria-label="Close">
+                <X size={18} />
               </button>
             </div>
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl text-sm font-semibold mb-4 transition-colors"
-            >
+            <a href={contact.waUrl} target="_blank" rel="noopener noreferrer" className="mb-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-green-500 py-3 text-sm font-semibold text-white transition hover:bg-green-600">
               <Phone size={16} />
               WhatsApp Instead
             </a>

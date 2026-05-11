@@ -4,6 +4,7 @@ import { getTemplateData } from '@/app/actions/template'
 import TemplateSelector from '@/components/dashboard/TemplateSelector'
 
 export const metadata: Metadata = { title: 'Choose Template' }
+export const dynamic = 'force-dynamic'
 
 export default async function TemplatePage() {
   const result = await getTemplateData()

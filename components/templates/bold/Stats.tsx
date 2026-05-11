@@ -1,10 +1,12 @@
-// Bold template stats strip — large gold numbers for years, procedures, specializations
-import type { ExperienceSection, ServicesSection, SpecializationSection } from '@/types/Profile'
+// Bold template stats strip - gold editorial metrics from existing profile data
+import {
+  getServiceCount,
+  getSpecializationCount,
+  type TemplateSections,
+} from '@/components/templates/shared'
 
 interface StatsProps {
-  experience?: ExperienceSection
-  services?: ServicesSection
-  specialization?: SpecializationSection
+  sections: TemplateSections
 }
 
 interface StatItem {
@@ -12,35 +14,25 @@ interface StatItem {
   label: string
 }
 
-export default function BoldStats({ experience, services, specialization }: StatsProps) {
-  const stats: StatItem[] = []
-
-  if (experience?.years) {
-    stats.push({ value: experience.years, label: 'Years of Experience' })
-  }
-
-  const procedureCount = services?.procedures?.length ?? 0
-  if (procedureCount > 0) {
-    stats.push({ value: procedureCount, label: 'Procedures Offered' })
-  }
-
-  const specCount = (specialization?.sub_specialties?.length ?? 0) + (specialization ? 1 : 0)
-  if (specCount > 0) {
-    stats.push({ value: specCount, label: 'Specializations' })
-  }
+export default function BoldStats({ sections }: StatsProps) {
+  const stats: StatItem[] = [
+    { value: sections.experience?.years ?? 0, label: 'Years of Experience' },
+    { value: getServiceCount(sections.services), label: 'Services Offered' },
+    { value: getSpecializationCount(sections.specialization), label: 'Focus Areas' },
+  ].filter((item) => item.value > 0)
 
   if (!stats.length) return null
 
   return (
-    <div className="bg-navy-dark border-b border-white/10">
-      <div className="max-w-4xl mx-auto flex divide-x divide-white/10">
-        {stats.map(({ value, label }) => (
-          <div key={label} className="flex-1 text-center px-6 py-10">
-            <p className="font-serif text-6xl md:text-8xl font-bold text-gold-300 leading-none">
-              {value}
+    <div className="border-y border-gold-300/20 bg-navy">
+      <div className="mx-auto grid max-w-7xl divide-y divide-gold-300/15 md:grid-cols-3 md:divide-x md:divide-y-0">
+        {stats.map((stat) => (
+          <div key={stat.label} className="px-6 py-8 text-center">
+            <p className="font-serif text-6xl font-bold leading-none text-gold-300 md:text-7xl">
+              {stat.value}
             </p>
-            <p className="mt-3 text-xs uppercase tracking-widest text-gray-400 font-sans">
-              {label}
+            <p className="mt-3 text-xs font-bold uppercase tracking-[0.24em] text-gray-400">
+              {stat.label}
             </p>
           </div>
         ))}

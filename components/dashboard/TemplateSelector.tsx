@@ -14,6 +14,7 @@ const PREVIEW_GRADIENT: Record<string, string> = {
   classic: 'from-blue-500 to-blue-700',
   modern:  'from-purple-500 to-purple-700',
   bold:    'from-orange-500 to-red-600',
+  oncology:'from-brand-900 via-clinical-ink to-brand-600',
 }
 
 interface Props {

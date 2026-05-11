@@ -66,4 +66,5 @@ export const TEMPLATE_META = {
   classic: { label: 'Classic', description: 'Clean, professional layout trusted by thousands of doctors.', tier: 'free' },
   modern:  { label: 'Modern',  description: 'Sleek contemporary design with bold typography.',             tier: 'pro'  },
   bold:    { label: 'Bold',    description: 'Vibrant and eye-catching — stand out from the crowd.',        tier: 'pro'  },
+  oncology:{ label: 'Oncology Pro', description: 'Premium cancer specialist profile built for trust, treatments, and patient callbacks.', tier: 'pro' },
 } as const

@@ -1,46 +1,72 @@
-// Bold template hero — dark navy with serif heading and gold-ringed doctor photo
+// Bold template hero - luxury editorial opening with gold verified treatment
 import Image from 'next/image'
+import { CalendarDays, Phone, ShieldCheck } from 'lucide-react'
 import type { Doctor } from '@/types/Doctor'
-import type { PersonalSection } from '@/types/Profile'
+import { getContactLinks, type TemplateSections } from '@/components/templates/shared'
 
 interface HeroProps {
   doctor: Doctor
-  personal?: PersonalSection
+  sections: TemplateSections
 }
 
-export default function BoldHero({ doctor, personal }: HeroProps) {
+export default function BoldHero({ doctor, sections }: HeroProps) {
+  const { personal, appointment } = sections
+  const contact = getContactLinks(appointment, doctor)
+
   return (
-    <section className="bg-navy text-white border-b border-gold-300/30">
-      <div className="max-w-4xl mx-auto px-6 pt-20 pb-16 flex flex-col items-center text-center">
-        {personal?.photo && (
-          <div className="relative w-36 h-36 mb-8 shrink-0">
-            <Image
-              src={personal.photo}
-              alt={`Dr. ${doctor.name}`}
-              fill
-              sizes="144px"
-              priority
-              className="rounded-full object-cover border-4 border-gold-300 shadow-2xl"
-            />
+    <section className="relative overflow-hidden bg-navy-dark">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-300 to-transparent" />
+      <div className="absolute left-0 top-0 h-full w-1/3 bg-gradient-to-r from-gold-300/10 to-transparent" />
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-[0.9fr_1.1fr] md:py-20">
+        <div className="relative order-2 animate-template-rise md:order-1">
+          <div className="absolute -left-5 -top-5 h-48 w-48 rounded-full border border-gold-300/20" />
+          <div className="relative overflow-hidden rounded-t-full border border-gold-300/40 bg-navy-light p-3 shadow-gold">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-t-full bg-navy">
+              {personal?.photo ? (
+                <Image
+                  src={personal.photo}
+                  alt={`Dr. ${doctor.name}`}
+                  fill
+                  sizes="(max-width: 768px) 90vw, 460px"
+                  priority
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center font-serif text-7xl text-gold-300/30">
+                  Dr
+                </div>
+              )}
+            </div>
           </div>
-        )}
-        <h1 className="font-serif text-5xl md:text-7xl font-bold leading-tight tracking-wide">
-          Dr. {doctor.name}
-        </h1>
-        <p className="mt-3 text-gold-300 text-lg tracking-widest uppercase font-sans">
-          {doctor.specialty}
-        </p>
-        {doctor.is_verified && (
-          <span className="inline-flex items-center gap-2 mt-5 text-xs border border-gold-300 text-gold-300 px-4 py-1.5 rounded-full font-medium">
-            <span className="w-3.5 h-3.5 bg-gold-300 rounded-full flex items-center justify-center text-[9px] font-bold text-navy">✓</span>
-            NMC Verified
-          </span>
-        )}
-        {personal?.tagline && (
-          <p className="mt-5 text-base text-gray-300 max-w-2xl leading-relaxed italic">
-            &ldquo;{personal.tagline}&rdquo;
+        </div>
+
+        <div className="order-1 flex flex-col justify-center animate-template-rise [animation-delay:140ms] md:order-2">
+          {doctor.is_verified && (
+            <span className="mb-7 inline-flex w-fit items-center gap-2 border-y border-gold-300/40 py-2 text-sm font-semibold text-gold-300">
+              <ShieldCheck size={16} />
+              NMC Verified
+            </span>
+          )}
+          <h1 className="font-serif text-5xl font-bold leading-none tracking-tight text-white md:text-7xl">
+            Dr. {doctor.name}
+          </h1>
+          <p className="mt-5 text-lg font-semibold uppercase tracking-[0.28em] text-gold-300">
+            {doctor.specialty}
           </p>
-        )}
+          {personal?.tagline && (
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-gray-300">{personal.tagline}</p>
+          )}
+          <div className="mt-9 flex flex-wrap gap-3">
+            <a href="#bold-book-form" className="inline-flex items-center gap-2 rounded-none bg-gold-300 px-6 py-3 text-sm font-bold text-navy transition hover:bg-gold-400">
+              <CalendarDays size={17} />
+              Book appointment
+            </a>
+            <a href={contact.waUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border border-gold-300/40 px-6 py-3 text-sm font-semibold text-gold-300 transition hover:bg-gold-300/10">
+              <Phone size={17} />
+              WhatsApp
+            </a>
+          </div>
+        </div>
       </div>
     </section>
   )
