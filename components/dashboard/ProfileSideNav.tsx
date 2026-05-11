@@ -4,11 +4,8 @@
 import { useState, useCallback, useTransition } from 'react'
 import { Eye, EyeOff, ChevronDown, ChevronRight, ArrowUp, ArrowDown, Lock } from 'lucide-react'
 import { updateSectionOrder } from '@/app/actions/profile'
-import { PROFILE_GROUPS, PRO_ONLY_SECTIONS, SECTION_LABELS, SECTION_ORDER_DEBOUNCE_MS } from '@/lib/constants'
+import { PROFILE_GROUPS, PRO_ONLY_SECTIONS, SECTION_LABELS } from '@/lib/constants'
 import type { SectionKey, SectionMeta } from '@/types/Profile'
-
-// SECTION_ORDER_DEBOUNCE_MS is imported for future debounced sync — current v1 syncs immediately
-void SECTION_ORDER_DEBOUNCE_MS
 
 interface ProfileSideNavProps {
   sections: Partial<Record<SectionKey, unknown>>
