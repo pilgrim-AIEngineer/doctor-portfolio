@@ -102,7 +102,7 @@ export async function getProfileSections(): Promise<{ data?: unknown; error?: st
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('section_key, data, updated_at')
+      .select('section_key, data, is_visible, display_order, updated_at')
       .eq('doctor_id', user.id)
 
     if (error) {
@@ -113,6 +113,51 @@ export async function getProfileSections(): Promise<{ data?: unknown; error?: st
     return { data }
   } catch (err) {
     console.error('[getProfileSections] unexpected', err)
+    return { error: 'Unexpected error. Please try again.' }
+  }
+}
+
+export async function updateSectionOrder(
+  updates: { section_key: string; display_order: number; is_visible: boolean }[]
+): Promise<{ data?: unknown; error?: string }> {
+  try {
+    const supabase = createServerClient()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+
+    if (authError || !user) return { error: 'Not authenticated' }
+
+    const rows = updates.map((u) => ({
+      doctor_id: user.id,
+      section_key: u.section_key,
+      data: {},
+      is_visible: u.is_visible,
+      display_order: u.display_order,
+      updated_at: new Date().toISOString(),
+    }))
+
+    const { error } = await supabase
+      .from('profiles')
+      .upsert(rows, { onConflict: 'doctor_id,section_key', ignoreDuplicates: false })
+
+    if (error) {
+      console.error('[updateSectionOrder]', error.message)
+      return { error: 'Failed to update section order.' }
+    }
+
+    const { data: doctorRow } = await supabase
+      .from('doctors')
+      .select('slug')
+      .eq('id', user.id)
+      .single()
+
+    if (doctorRow?.slug) revalidatePath(`/dr/${doctorRow.slug}`)
+
+    return { data: true }
+  } catch (err) {
+    console.error('[updateSectionOrder] unexpected', err)
     return { error: 'Unexpected error. Please try again.' }
   }
 }
