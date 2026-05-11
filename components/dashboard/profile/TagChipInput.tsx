@@ -14,7 +14,7 @@ export default function TagChipInput({ value, onChange, placeholder }: TagChipIn
   const [input, setInput] = useState('')
 
   function addTag(raw: string) {
-    const tag = raw.trim()
+    const tag = raw.replace(/,/g, '').trim()
     if (!tag || value.includes(tag)) return
     onChange([...value, tag])
     setInput('')
@@ -29,21 +29,21 @@ export default function TagChipInput({ value, onChange, placeholder }: TagChipIn
     }
   }
 
-  function removeTag(index: number) {
-    onChange(value.filter((_, i) => i !== index))
+  function removeTag(tagToRemove: string) {
+    onChange(value.filter((tag) => tag !== tagToRemove))
   }
 
   return (
     <div className="min-h-[42px] w-full rounded-lg border border-gray-300 px-3 py-2 focus-within:ring-2 focus-within:ring-brand-500 focus-within:border-transparent flex flex-wrap gap-1.5">
-      {value.map((tag, i) => (
+      {value.map((tag) => (
         <span
-          key={i}
+          key={tag}
           className="inline-flex items-center gap-1 bg-brand-50 text-brand-700 text-xs font-medium px-2 py-0.5 rounded-full"
         >
           {tag}
           <button
             type="button"
-            onClick={() => removeTag(i)}
+            onClick={() => removeTag(tag)}
             className="hover:text-brand-900 focus:outline-none"
             aria-label={`Remove ${tag}`}
           >

@@ -26,7 +26,7 @@ export default function CardArrayInput<T>({
   return (
     <div className="space-y-3">
       {items.map((item, i) => (
-        <div key={i} className="relative border border-gray-200 rounded-lg p-4 bg-gray-50">
+        <div key={i} className="relative border border-gray-200 rounded-lg p-4 pr-8 bg-gray-50">
           <button
             type="button"
             onClick={() => onRemove(i)}

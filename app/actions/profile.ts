@@ -129,22 +129,21 @@ export async function updateSectionOrder(
 
     if (authError || !user) return { error: 'Not authenticated' }
 
-    const rows = updates.map((u) => ({
-      doctor_id: user.id,
-      section_key: u.section_key,
-      data: {},
-      is_visible: u.is_visible,
-      display_order: u.display_order,
-      updated_at: new Date().toISOString(),
-    }))
+    for (const u of updates) {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          is_visible: u.is_visible,
+          display_order: u.display_order,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('doctor_id', user.id)
+        .eq('section_key', u.section_key)
 
-    const { error } = await supabase
-      .from('profiles')
-      .upsert(rows, { onConflict: 'doctor_id,section_key', ignoreDuplicates: false })
-
-    if (error) {
-      console.error('[updateSectionOrder]', error.message)
-      return { error: 'Failed to update section order.' }
+      if (error) {
+        console.error('[updateSectionOrder]', error.message)
+        return { error: 'Failed to update section order.' }
+      }
     }
 
     const { data: doctorRow } = await supabase
