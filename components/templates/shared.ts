@@ -6,7 +6,12 @@ import type {
   AppointmentSection,
   ClinicInfoSection,
   ExperienceSection,
+  FAQSection,
+  FeesSection,
+  HospitalEntry,
+  LocationsSection,
   PersonalSection,
+  QualificationEntry,
   QualificationsSection,
   SectionKey,
   ServicesSection,
@@ -55,6 +60,9 @@ export interface TemplateSections {
   social?: SocialSection
   research?: ResearchData
   testimonials?: TestimonialsData
+  fees?: FeesSection
+  locations?: LocationsSection
+  faq?: FAQSection
 }
 
 export function getTemplateSections(
@@ -75,6 +83,9 @@ export function getTemplateSections(
     social: sections.social as SocialSection | undefined,
     research: sections.research as ResearchData | undefined,
     testimonials: sections.testimonials as TestimonialsData | undefined,
+    fees: sections.fees as FeesSection | undefined,
+    locations: sections.locations as LocationsSection | undefined,
+    faq: sections.faq as FAQSection | undefined,
   }
 }
 
@@ -134,4 +145,21 @@ export function getPreviewMissingSections(sections: TemplateSections): string[] 
   if (!sections.clinicInfo) missing.push('clinic')
   if (!sections.appointment) missing.push('appointment')
   return missing
+}
+
+export function computeExperienceYears(experience?: ExperienceSection): number {
+  if (!experience?.hospitals?.length) return 0
+  const minYear = Math.min(...experience.hospitals.map((h: HospitalEntry) => h.from_year))
+  return Math.max(0, new Date().getFullYear() - minYear)
+}
+
+export function getHospitalItems(experience?: ExperienceSection): string[] {
+  return (experience?.hospitals ?? []).map(
+    (h: HospitalEntry) =>
+      `${h.role} at ${h.hospital}, ${h.location} (${h.from_year}–${h.to_year ?? 'Present'})`,
+  )
+}
+
+export function getQualificationItems(entries: QualificationEntry[]): string[] {
+  return entries.map((e: QualificationEntry) => `${e.degree}, ${e.institution} (${e.year})`)
 }

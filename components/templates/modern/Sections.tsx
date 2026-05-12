@@ -16,8 +16,11 @@ import {
 } from 'lucide-react'
 import GalleryLightbox from '@/components/templates/classic/GalleryLightbox'
 import {
+  computeExperienceYears,
   getAchievementItems,
   getGalleryImages,
+  getHospitalItems,
+  getQualificationItems,
   getSocialLinks,
   hasItems,
   type TemplateSections,
@@ -138,26 +141,32 @@ function Services({ sections }: SectionsProps) {
 function Experience({ sections }: SectionsProps) {
   const data = sections.experience
   if (!data) return null
+  const years = computeExperienceYears(data)
+  const hospitalItems = getHospitalItems(data)
   return (
     <GlassSection id="modern-experience" title="Experience" icon={<Briefcase size={20} />}>
-      <div className="mb-5 flex items-end gap-3">
-        <span className="text-6xl font-semibold text-cyan-200">{data.years}</span>
-        <span className="pb-2 text-sm font-bold uppercase text-slate-400">years</span>
-      </div>
+      {years > 0 && (
+        <div className="mb-5 flex items-end gap-3">
+          <span className="text-6xl font-semibold text-cyan-200">{years}</span>
+          <span className="pb-2 text-sm font-bold uppercase text-slate-400">years</span>
+        </div>
+      )}
       {data.current_affiliation && <p className="mb-4 font-semibold text-white">{data.current_affiliation}</p>}
-      <ItemList items={data.hospitals} />
+      <ItemList items={hospitalItems} />
     </GlassSection>
   )
 }
 
 function Qualifications({ sections }: SectionsProps) {
   const data = sections.qualifications
-  if (!data || (!hasItems(data.degrees) && !hasItems(data.fellowships))) return null
+  if (!data || (!data.degrees?.length && !data.fellowships?.length)) return null
+  const degrees = getQualificationItems(data.degrees ?? [])
+  const fellowships = getQualificationItems(data.fellowships ?? [])
   return (
     <GlassSection title="Qualifications" icon={<GraduationCap size={20} />}>
       <div className="space-y-5">
-        <ItemList items={data.degrees} />
-        <ItemList items={data.fellowships} />
+        <ItemList items={degrees} />
+        <ItemList items={fellowships} />
       </div>
     </GlassSection>
   )

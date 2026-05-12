@@ -1,5 +1,6 @@
 // Bold template stats strip - gold editorial metrics from existing profile data
 import {
+  computeExperienceYears,
   getServiceCount,
   getSpecializationCount,
   type TemplateSections,
@@ -16,7 +17,7 @@ interface StatItem {
 
 export default function BoldStats({ sections }: StatsProps) {
   const stats: StatItem[] = [
-    { value: sections.experience?.years ?? 0, label: 'Years of Experience' },
+    { value: computeExperienceYears(sections.experience), label: 'Years of Experience' },
     { value: getServiceCount(sections.services), label: 'Services Offered' },
     { value: getSpecializationCount(sections.specialization), label: 'Focus Areas' },
   ].filter((item) => item.value > 0)

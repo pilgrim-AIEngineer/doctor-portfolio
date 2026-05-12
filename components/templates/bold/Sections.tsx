@@ -14,8 +14,11 @@ import {
 } from 'lucide-react'
 import GalleryLightbox from '@/components/templates/classic/GalleryLightbox'
 import {
+  computeExperienceYears,
   getAchievementItems,
   getGalleryImages,
+  getHospitalItems,
+  getQualificationItems,
   getSocialLinks,
   hasItems,
   type TemplateSections,
@@ -120,26 +123,32 @@ function Services({ sections }: SectionsProps) {
 function Experience({ sections }: SectionsProps) {
   const data = sections.experience
   if (!data) return null
+  const years = computeExperienceYears(data)
+  const hospitalItems = getHospitalItems(data)
   return (
     <EditorialSection title="Experience" icon={<Award size={20} />}>
-      <div className="mb-5 flex items-end gap-3">
-        <span className="font-serif text-6xl font-bold text-gold-300">{data.years}</span>
-        <span className="pb-2 text-xs font-bold uppercase tracking-[0.2em] text-gray-400">years</span>
-      </div>
+      {years > 0 && (
+        <div className="mb-5 flex items-end gap-3">
+          <span className="font-serif text-6xl font-bold text-gold-300">{years}</span>
+          <span className="pb-2 text-xs font-bold uppercase tracking-[0.2em] text-gray-400">years</span>
+        </div>
+      )}
       {data.current_affiliation && <p className="mb-4 font-semibold text-white">{data.current_affiliation}</p>}
-      <ListItems items={data.hospitals} />
+      <ListItems items={hospitalItems} />
     </EditorialSection>
   )
 }
 
 function Qualifications({ sections }: SectionsProps) {
   const data = sections.qualifications
-  if (!data || (!hasItems(data.degrees) && !hasItems(data.fellowships))) return null
+  if (!data || (!data.degrees?.length && !data.fellowships?.length)) return null
+  const degrees = getQualificationItems(data.degrees ?? [])
+  const fellowships = getQualificationItems(data.fellowships ?? [])
   return (
     <EditorialSection title="Qualifications" icon={<GraduationCap size={20} />} light>
       <div className="space-y-5">
-        <ListItems items={data.degrees} light />
-        <ListItems items={data.fellowships} light />
+        <ListItems items={degrees} light />
+        <ListItems items={fellowships} light />
       </div>
     </EditorialSection>
   )

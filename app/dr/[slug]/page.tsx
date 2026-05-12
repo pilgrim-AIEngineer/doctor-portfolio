@@ -52,7 +52,12 @@ const fetchPortfolioData = cache(async (slug: string): Promise<PortfolioData> =>
   if (doctorError || !doctor) return null
 
   const [sectionsRes, templateRes] = await Promise.all([
-    supabase.from('profiles').select('section_key, data').eq('doctor_id', doctor.id),
+    supabase
+      .from('profiles')
+      .select('section_key, data, is_visible, display_order')
+      .eq('doctor_id', doctor.id)
+      .eq('is_visible', true)
+      .order('display_order', { ascending: true }),
     supabase
       .from('doctor_templates')
       .select('templates(id, name, preview_image, is_active)')
@@ -116,6 +121,21 @@ function buildJsonLd(doctor: Doctor, sections: Partial<Record<SectionKey, unknow
   }
 }
 
+function buildFaqJsonLd(sections: Partial<Record<SectionKey, unknown>>) {
+  const faq = sections.faq as { items?: { question: string; answer: string }[] } | undefined
+  if (!faq?.items?.length) return null
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
+  }
+}
+
 export default async function DoctorPortfolioPage({ params }: PageProps) {
   const data = await fetchPortfolioData(params.slug)
   if (!data) notFound()
@@ -128,6 +148,7 @@ export default async function DoctorPortfolioPage({ params }: PageProps) {
   }
 
   const jsonLd = buildJsonLd(doctor, sections)
+  const faqJsonLd = buildFaqJsonLd(sections)
   const profile: DoctorProfile = { doctor, sections, template }
 
   return (
@@ -136,6 +157,12 @@ export default async function DoctorPortfolioPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       {template.name === 'modern' ? (
         <ModernTemplate profile={profile} />
       ) : template.name === 'bold' ? (

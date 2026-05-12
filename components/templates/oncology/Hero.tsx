@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import type { Doctor } from '@/types/Doctor'
 import {
+  computeExperienceYears,
   getContactLinks,
   getServiceCount,
   getSpecializationCount,
@@ -25,6 +26,7 @@ export default function OncologyHero({ doctor, sections }: HeroProps) {
   const { personal, clinicInfo, appointment, experience, specialization, services } = sections
   const contact = getContactLinks(appointment, doctor)
   const careAreas = getSpecializationCount(specialization) + getServiceCount(services)
+  const experienceYears = computeExperienceYears(experience)
 
   return (
     <header className="relative overflow-hidden bg-oncology-midnight text-white">
@@ -82,7 +84,7 @@ export default function OncologyHero({ doctor, sections }: HeroProps) {
           </div>
 
           <div className="mt-10 grid gap-3 sm:grid-cols-3">
-            <HeroStat value={experience?.years ? `${experience.years}+` : 'Direct'} label="Years in cancer care" />
+            <HeroStat value={experienceYears > 0 ? `${experienceYears}+` : 'Direct'} label="Years in cancer care" />
             <HeroStat value={careAreas ? `${careAreas}+` : 'Focused'} label="Treatment areas" />
             <HeroStat value={clinicInfo?.timings ?? 'Priority'} label="Clinic access" />
           </div>

@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { ArrowDown, CalendarDays, Phone, ShieldCheck, Sparkles } from 'lucide-react'
 import type { Doctor } from '@/types/Doctor'
 import {
+  computeExperienceYears,
   getContactLinks,
   getServiceCount,
   getSpecializationCount,
@@ -81,7 +82,7 @@ export default function ModernHero({ doctor, sections }: HeroProps) {
               </div>
             </div>
             <div className="grid gap-4">
-              <Metric value={experience?.years ?? 0} label="years" />
+              <Metric value={computeExperienceYears(experience)} label="years" />
               <Metric value={getServiceCount(services)} label="services" />
               <Metric value={getSpecializationCount(specialization)} label="focus areas" />
               <div className="relative overflow-hidden rounded-[1.5rem] border border-cyan-300/20 bg-cyan-300/10 p-5">

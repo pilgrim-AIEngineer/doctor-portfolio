@@ -15,8 +15,11 @@ import {
 } from 'lucide-react'
 import GalleryLightbox from './GalleryLightbox'
 import {
+  computeExperienceYears,
   getAchievementItems,
   getGalleryImages,
+  getHospitalItems,
+  getQualificationItems,
   getSocialLinks,
   hasItems,
   type TemplateSections,
@@ -87,12 +90,14 @@ function About({ sections }: SectionsProps) {
 
 function Qualifications({ sections }: SectionsProps) {
   const data = sections.qualifications
-  if (!data || (!hasItems(data.degrees) && !hasItems(data.fellowships))) return null
+  if (!data || (!data.degrees?.length && !data.fellowships?.length)) return null
+  const degrees = getQualificationItems(data.degrees ?? [])
+  const fellowships = getQualificationItems(data.fellowships ?? [])
   return (
     <SectionBand title="Qualifications" icon={<GraduationCap size={20} />}>
       <div className="space-y-6">
-        <ListItems items={data.degrees} />
-        <ListItems items={data.fellowships} accent="bg-brand-300" />
+        <ListItems items={degrees} />
+        <ListItems items={fellowships} accent="bg-brand-300" />
       </div>
     </SectionBand>
   )
@@ -114,16 +119,20 @@ function Specialization({ sections }: SectionsProps) {
 function Experience({ sections }: SectionsProps) {
   const data = sections.experience
   if (!data) return null
+  const years = computeExperienceYears(data)
+  const hospitalItems = getHospitalItems(data)
   return (
     <SectionBand title="Experience" icon={<BookOpen size={20} />}>
-      <div className="mb-5 inline-flex items-end gap-3 rounded-2xl bg-clinical-soft px-5 py-4">
-        <span className="text-5xl font-semibold text-brand-700">{data.years}</span>
-        <span className="pb-1 text-sm font-semibold uppercase text-gray-500">years</span>
-      </div>
+      {years > 0 && (
+        <div className="mb-5 inline-flex items-end gap-3 rounded-2xl bg-clinical-soft px-5 py-4">
+          <span className="text-5xl font-semibold text-brand-700">{years}</span>
+          <span className="pb-1 text-sm font-semibold uppercase text-gray-500">years</span>
+        </div>
+      )}
       {data.current_affiliation && (
         <p className="mb-4 font-semibold text-clinical-ink">{data.current_affiliation}</p>
       )}
-      <ListItems items={data.hospitals} />
+      <ListItems items={hospitalItems} />
     </SectionBand>
   )
 }

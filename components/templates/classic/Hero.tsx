@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { CalendarDays, MapPin, Phone, ShieldCheck } from 'lucide-react'
 import type { Doctor } from '@/types/Doctor'
-import { getContactLinks, type TemplateSections } from '@/components/templates/shared'
+import { computeExperienceYears, getContactLinks, type TemplateSections } from '@/components/templates/shared'
 
 interface HeroProps {
   doctor: Doctor
@@ -83,12 +83,15 @@ export default function ClassicHero({ doctor, sections }: HeroProps) {
               )}
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3">
-              {experience?.years ? (
-                <div className="rounded-2xl bg-clinical-soft p-4">
-                  <p className="text-3xl font-semibold text-brand-700">{experience.years}</p>
-                  <p className="text-xs font-medium uppercase text-gray-500">Years</p>
-                </div>
-              ) : null}
+              {(() => {
+                const years = computeExperienceYears(experience)
+                return years > 0 ? (
+                  <div className="rounded-2xl bg-clinical-soft p-4">
+                    <p className="text-3xl font-semibold text-brand-700">{years}</p>
+                    <p className="text-xs font-medium uppercase text-gray-500">Years</p>
+                  </div>
+                ) : null
+              })()}
               <div className="rounded-2xl bg-clinical-soft p-4">
                 <p className="text-sm font-semibold text-clinical-ink">Direct care access</p>
                 <p className="mt-1 text-xs text-gray-500">{contact.formattedPhone}</p>

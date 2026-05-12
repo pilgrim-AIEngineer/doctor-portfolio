@@ -15,8 +15,10 @@ import {
 import type { Doctor } from '@/types/Doctor'
 import GalleryLightbox from '@/components/templates/classic/GalleryLightbox'
 import {
+  computeExperienceYears,
   getAchievementItems,
   getGalleryImages,
+  getQualificationItems,
   getSocialLinks,
   hasItems,
   type TemplateSections,
@@ -82,8 +84,9 @@ function AnchorNav() {
 
 function TrustBand({ doctor, sections }: SectionsProps) {
   const { experience, languages, clinicInfo } = sections
+  const expYears = computeExperienceYears(experience)
   const items = [
-    experience?.years ? { label: 'Experience', value: `${experience.years}+ years`, icon: <Stethoscope size={18} /> } : null,
+    expYears > 0 ? { label: 'Experience', value: `${expYears}+ years`, icon: <Stethoscope size={18} /> } : null,
     experience?.current_affiliation ? { label: 'Affiliation', value: experience.current_affiliation, icon: <MapPin size={18} /> } : null,
     doctor.is_verified ? { label: 'Registration', value: 'NMC verified', icon: <ShieldCheck size={18} /> } : null,
     hasItems(languages?.spoken) ? { label: 'Languages', value: languages.spoken.join(', '), icon: <Languages size={18} /> } : null,
@@ -150,14 +153,19 @@ function DoctorStory({ sections }: Pick<SectionsProps, 'sections'>) {
 
 function Credentials({ sections }: Pick<SectionsProps, 'sections'>) {
   const achievements = getAchievementItems(sections.achievements)
-  const hasContent = hasItems(sections.qualifications?.degrees) || hasItems(sections.qualifications?.fellowships) || achievements.length
+  const hasContent =
+    (sections.qualifications?.degrees?.length ?? 0) > 0 ||
+    (sections.qualifications?.fellowships?.length ?? 0) > 0 ||
+    achievements.length > 0
   if (!hasContent) return null
+  const degrees = getQualificationItems(sections.qualifications?.degrees ?? [])
+  const fellowships = getQualificationItems(sections.qualifications?.fellowships ?? [])
 
   return (
     <SectionCard title="Credentials" icon={<GraduationCap size={20} />}>
       <div className="space-y-6">
-        <TextList title="Degrees" items={sections.qualifications?.degrees} />
-        <TextList title="Fellowships" items={sections.qualifications?.fellowships} />
+        <TextList title="Degrees" items={degrees} />
+        <TextList title="Fellowships" items={fellowships} />
         <TextList title="Awards" items={achievements} iconClass="bg-oncology-gold" />
       </div>
     </SectionCard>
