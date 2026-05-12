@@ -1,6 +1,7 @@
 // Profile editor page — two-column layout with side nav and active form pane
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { ExternalLink } from 'lucide-react'
 import { getProfileSections } from '@/app/actions/profile'
 import { createServerClient } from '@/lib/supabase/server'
@@ -13,10 +14,11 @@ export const dynamic = 'force-dynamic'
 export default async function ProfilePage() {
   const supabase = createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
   const [sectionsResult, doctorResult] = await Promise.all([
     getProfileSections(),
-    supabase.from('doctors').select('slug, plan').eq('id', user!.id).single(),
+    supabase.from('doctors').select('slug, plan').eq('id', user.id).single(),
   ])
 
   const sections: Partial<Record<SectionKey, unknown>> = {}

@@ -61,12 +61,13 @@ export default function ProfileEditor({ sections, sectionMeta, doctorPlan }: Pro
 
   return (
     <>
-      {/* Mobile: group chips */}
+      {/* Mobile: group chips — tapping navigates to first section in group */}
       <div className="md:hidden overflow-x-auto -mx-6 px-6 mb-4">
         <div className="flex gap-2 min-w-max">
           {PROFILE_GROUPS.map((group) => (
             <button
               key={group.key}
+              onClick={() => setActiveSection(group.sections[0] as SectionKey)}
               className="px-3 py-1.5 text-xs font-medium rounded-full border border-gray-200 text-gray-600 hover:border-brand-300 hover:text-brand-700 whitespace-nowrap"
             >
               {group.label}
