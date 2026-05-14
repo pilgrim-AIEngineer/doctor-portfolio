@@ -17,7 +17,7 @@ export default function ModernTemplate({ profile }: ModernTemplateProps) {
     <div className="min-h-screen bg-modern-ink text-white pb-24">
       <ModernHero doctor={doctor} sections={templateSections} />
       <ModernSections sections={templateSections} />
-      <ModernAppointmentCTA appointment={templateSections.appointment} doctor={doctor} />
+      <ModernAppointmentCTA appointment={templateSections.appointment} doctor={doctor} fees={templateSections.fees} />
     </div>
   )
 }

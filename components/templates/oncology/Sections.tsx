@@ -13,6 +13,7 @@ import {
   UserRound,
 } from 'lucide-react'
 import type { Doctor } from '@/types/Doctor'
+import type { LocationEntry } from '@/types/Profile'
 import GalleryLightbox from '@/components/templates/classic/GalleryLightbox'
 import {
   computeExperienceYears,
@@ -172,7 +173,30 @@ function Credentials({ sections }: Pick<SectionsProps, 'sections'>) {
   )
 }
 
+function LocationCard({ loc }: { loc: LocationEntry }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.07] p-4 space-y-2">
+      <p className="font-semibold text-oncology-gold">{loc.name}</p>
+      <InfoRow icon={<MapPin size={18} />} text={loc.address} />
+      <InfoRow icon={<Clock size={18} />} text={loc.timings} />
+      <InfoLink icon={<Phone size={18} />} href={`tel:${loc.phone}`} text={loc.phone} />
+      {loc.map_url && <InfoLink icon={<ExternalLink size={18} />} href={loc.map_url} text="Get Directions" />}
+    </div>
+  )
+}
+
 function Clinic({ sections }: Pick<SectionsProps, 'sections'>) {
+  const locationEntries = sections.locations?.locations
+  if (locationEntries && locationEntries.length > 0) {
+    const sorted = [...locationEntries].sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0))
+    return (
+      <SectionCard id="oncology-clinic" title="Clinic Access" icon={<MapPin size={20} />}>
+        <div className="space-y-4">
+          {sorted.map((loc) => <LocationCard key={loc.name} loc={loc} />)}
+        </div>
+      </SectionCard>
+    )
+  }
   const data = sections.clinicInfo
   if (!data) return null
 

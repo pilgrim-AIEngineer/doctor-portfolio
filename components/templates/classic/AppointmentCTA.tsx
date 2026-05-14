@@ -1,23 +1,25 @@
 // Classic template appointment CTA - polished booking band and mobile contact bar
 import { CalendarDays, ExternalLink, Phone } from 'lucide-react'
-import type { AppointmentSection } from '@/types/Profile'
+import type { AppointmentSection, FeesSection } from '@/types/Profile'
 import type { Doctor } from '@/types/Doctor'
 import { getContactLinks } from '@/components/templates/shared'
 import BookingForm from './BookingForm'
+import FeesCard from '@/components/templates/FeesCard'
 
 interface AppointmentCTAProps {
   appointment?: AppointmentSection
   doctor: Doctor
+  fees?: FeesSection
 }
 
-export default function AppointmentCTA({ appointment, doctor }: AppointmentCTAProps) {
+export default function AppointmentCTA({ appointment, doctor, fees }: AppointmentCTAProps) {
   const contact = getContactLinks(appointment, doctor)
 
   return (
     <>
       {contact.formEnabled && (
         <section id="classic-book-form" className="md:hidden px-6 pb-5">
-          <BookingPanel doctor={doctor} contact={contact} compact />
+          <BookingPanel doctor={doctor} contact={contact} fees={fees} compact />
         </section>
       )}
 
@@ -45,7 +47,7 @@ export default function AppointmentCTA({ appointment, doctor }: AppointmentCTAPr
       </div>
 
       <section id="classic-book-form" className="hidden bg-white px-6 py-14 md:block">
-        <BookingPanel doctor={doctor} contact={contact} />
+        <BookingPanel doctor={doctor} contact={contact} fees={fees} />
       </section>
     </>
   )
@@ -54,10 +56,12 @@ export default function AppointmentCTA({ appointment, doctor }: AppointmentCTAPr
 function BookingPanel({
   doctor,
   contact,
+  fees,
   compact = false,
 }: {
   doctor: Doctor
   contact: ReturnType<typeof getContactLinks>
+  fees?: FeesSection
   compact?: boolean
 }) {
   return (
@@ -70,6 +74,7 @@ function BookingPanel({
         <p className="mt-3 text-gray-600">
           Use WhatsApp for fastest response, or send a request through the booking form.
         </p>
+        {fees && <FeesCard fees={fees} />}
         <div className="mt-6 flex flex-wrap gap-3">
           <a href={contact.waUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full bg-green-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-green-600">
             <Phone size={16} />

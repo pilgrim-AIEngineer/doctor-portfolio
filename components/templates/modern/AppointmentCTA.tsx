@@ -3,17 +3,19 @@
 
 import { useState } from 'react'
 import { CalendarDays, ExternalLink, Phone, X } from 'lucide-react'
-import type { AppointmentSection } from '@/types/Profile'
+import type { AppointmentSection, FeesSection } from '@/types/Profile'
 import type { Doctor } from '@/types/Doctor'
 import { getContactLinks } from '@/components/templates/shared'
 import BookingForm from '@/components/templates/classic/BookingForm'
+import FeesCard from '@/components/templates/FeesCard'
 
 interface AppointmentCTAProps {
   appointment?: AppointmentSection
   doctor: Doctor
+  fees?: FeesSection
 }
 
-export default function ModernAppointmentCTA({ appointment, doctor }: AppointmentCTAProps) {
+export default function ModernAppointmentCTA({ appointment, doctor, fees }: AppointmentCTAProps) {
   const [formOpen, setFormOpen] = useState(false)
   const contact = getContactLinks(appointment, doctor)
 
@@ -67,6 +69,7 @@ export default function ModernAppointmentCTA({ appointment, doctor }: Appointmen
               <Phone size={16} />
               WhatsApp Instead
             </a>
+            {fees && <div className="mb-4"><FeesCard fees={fees} /></div>}
             <BookingForm doctorId={doctor.id} doctorEmail={doctor.email ?? ''} />
           </div>
         </div>

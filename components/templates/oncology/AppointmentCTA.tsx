@@ -1,16 +1,18 @@
 // Oncology template appointment CTA - premium callback panel and sticky contact bar
 import { CalendarDays, ExternalLink, Phone, ShieldCheck } from 'lucide-react'
-import type { AppointmentSection } from '@/types/Profile'
+import type { AppointmentSection, FeesSection } from '@/types/Profile'
 import type { Doctor } from '@/types/Doctor'
 import { getContactLinks } from '@/components/templates/shared'
 import BookingForm from '@/components/templates/classic/BookingForm'
+import FeesCard from '@/components/templates/FeesCard'
 
 interface AppointmentCTAProps {
   appointment?: AppointmentSection
   doctor: Doctor
+  fees?: FeesSection
 }
 
-export default function OncologyAppointmentCTA({ appointment, doctor }: AppointmentCTAProps) {
+export default function OncologyAppointmentCTA({ appointment, doctor, fees }: AppointmentCTAProps) {
   const contact = getContactLinks(appointment, doctor)
 
   return (
@@ -45,6 +47,7 @@ export default function OncologyAppointmentCTA({ appointment, doctor }: Appointm
                 </a>
               )}
             </div>
+            {fees && <div className="mt-4"><FeesCard fees={fees} variant="dark" /></div>}
           </div>
 
           {contact.formEnabled ? (

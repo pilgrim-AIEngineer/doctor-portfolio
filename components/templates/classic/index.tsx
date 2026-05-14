@@ -17,7 +17,7 @@ export default function ClassicTemplate({ profile }: ClassicTemplateProps) {
     <div className="min-h-screen bg-clinical-mist text-clinical-ink pb-24 md:pb-0">
       <ClassicHero doctor={doctor} sections={templateSections} />
       <ClassicSections sections={templateSections} />
-      <AppointmentCTA appointment={templateSections.appointment} doctor={doctor} />
+      <AppointmentCTA appointment={templateSections.appointment} doctor={doctor} fees={templateSections.fees} />
     </div>
   )
 }

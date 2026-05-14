@@ -3,6 +3,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createServerClient } from '@/lib/supabase/server'
+import { PRO_ONLY_SECTIONS } from '@/lib/constants'
 import type { SectionKey } from '@/types/Profile'
 
 export async function saveProfileSection(
@@ -17,6 +18,17 @@ export async function saveProfileSection(
     } = await supabase.auth.getUser()
 
     if (authError || !user) return { error: 'Not authenticated' }
+
+    if ((PRO_ONLY_SECTIONS as readonly string[]).includes(sectionKey)) {
+      const { data: planRow } = await supabase
+        .from('doctors')
+        .select('plan')
+        .eq('id', user.id)
+        .single()
+      if (planRow?.plan !== 'pro') {
+        return { error: 'Pro plan required to save this section.' }
+      }
+    }
 
     const { data: saved, error } = await supabase
       .from('profiles')
@@ -129,21 +141,22 @@ export async function updateSectionOrder(
 
     if (authError || !user) return { error: 'Not authenticated' }
 
-    for (const u of updates) {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
+    const { error } = await supabase
+      .from('profiles')
+      .upsert(
+        updates.map((u) => ({
+          doctor_id: user.id,
+          section_key: u.section_key,
           is_visible: u.is_visible,
           display_order: u.display_order,
           updated_at: new Date().toISOString(),
-        })
-        .eq('doctor_id', user.id)
-        .eq('section_key', u.section_key)
+        })),
+        { onConflict: 'doctor_id,section_key' }
+      )
 
-      if (error) {
-        console.error('[updateSectionOrder]', error.message)
-        return { error: 'Failed to update section order.' }
-      }
+    if (error) {
+      console.error('[updateSectionOrder]', error.message)
+      return { error: 'Failed to update section order.' }
     }
 
     const { data: doctorRow } = await supabase

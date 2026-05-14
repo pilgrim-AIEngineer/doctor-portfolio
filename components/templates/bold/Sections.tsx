@@ -12,6 +12,7 @@ import {
   Stethoscope,
   User2,
 } from 'lucide-react'
+import type { LocationEntry } from '@/types/Profile'
 import GalleryLightbox from '@/components/templates/classic/GalleryLightbox'
 import {
   computeExperienceYears,
@@ -167,7 +168,30 @@ function Specialization({ sections }: SectionsProps) {
   )
 }
 
+function LocationCard({ loc }: { loc: LocationEntry }) {
+  return (
+    <div className="border border-white/10 bg-white/5 p-4 space-y-2">
+      <p className="font-semibold text-gold-300">{loc.name}</p>
+      <InfoRow icon={<MapPin size={18} />} text={loc.address} />
+      <InfoRow icon={<Clock size={18} />} text={loc.timings} />
+      <InfoLink icon={<Phone size={18} />} href={`tel:${loc.phone}`} text={loc.phone} />
+      {loc.map_url && <InfoLink icon={<ExternalLink size={18} />} href={loc.map_url} text="Get Directions" />}
+    </div>
+  )
+}
+
 function Clinic({ sections }: SectionsProps) {
+  const locationEntries = sections.locations?.locations
+  if (locationEntries && locationEntries.length > 0) {
+    const sorted = [...locationEntries].sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0))
+    return (
+      <EditorialSection title="Clinic" icon={<MapPin size={20} />} wide>
+        <div className="grid gap-4 md:grid-cols-2">
+          {sorted.map((loc) => <LocationCard key={loc.name} loc={loc} />)}
+        </div>
+      </EditorialSection>
+    )
+  }
   const data = sections.clinicInfo
   if (!data) return null
   return (

@@ -13,6 +13,7 @@ import {
   Shield,
   Stethoscope,
 } from 'lucide-react'
+import type { LocationEntry } from '@/types/Profile'
 import GalleryLightbox from './GalleryLightbox'
 import {
   computeExperienceYears,
@@ -163,7 +164,30 @@ function Services({ sections }: SectionsProps) {
   )
 }
 
+function LocationCard({ loc }: { loc: LocationEntry }) {
+  return (
+    <div className="rounded-2xl border border-clinical-line bg-clinical-soft p-4 space-y-2">
+      <p className="font-semibold text-clinical-ink">{loc.name}</p>
+      <InfoRow icon={<MapPin size={18} />} text={loc.address} />
+      <InfoRow icon={<Clock size={18} />} text={loc.timings} />
+      <InfoLink icon={<Phone size={18} />} href={`tel:${loc.phone}`} text={loc.phone} />
+      {loc.map_url && <InfoLink icon={<ExternalLink size={18} />} href={loc.map_url} text="Get Directions" />}
+    </div>
+  )
+}
+
 function Clinic({ sections }: SectionsProps) {
+  const locationEntries = sections.locations?.locations
+  if (locationEntries && locationEntries.length > 0) {
+    const sorted = [...locationEntries].sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0))
+    return (
+      <SectionBand title="Clinic" icon={<MapPin size={20} />}>
+        <div className="space-y-4">
+          {sorted.map((loc) => <LocationCard key={loc.name} loc={loc} />)}
+        </div>
+      </SectionBand>
+    )
+  }
   const data = sections.clinicInfo
   if (!data) return null
   return (

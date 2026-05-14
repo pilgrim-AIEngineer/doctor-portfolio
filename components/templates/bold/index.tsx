@@ -19,7 +19,7 @@ export default function BoldTemplate({ profile }: BoldTemplateProps) {
       <BoldHero doctor={doctor} sections={templateSections} />
       <BoldStats sections={templateSections} />
       <BoldSections sections={templateSections} />
-      <BoldAppointmentCTA appointment={templateSections.appointment} doctor={doctor} />
+      <BoldAppointmentCTA appointment={templateSections.appointment} doctor={doctor} fees={templateSections.fees} />
     </div>
   )
 }

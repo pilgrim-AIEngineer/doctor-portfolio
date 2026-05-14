@@ -17,7 +17,7 @@ export default function OncologyTemplate({ profile }: OncologyTemplateProps) {
     <div className="min-h-screen bg-oncology-midnight text-white pb-24 md:pb-0">
       <OncologyHero doctor={doctor} sections={templateSections} />
       <OncologySections doctor={doctor} sections={templateSections} />
-      <OncologyAppointmentCTA appointment={templateSections.appointment} doctor={doctor} />
+      <OncologyAppointmentCTA appointment={templateSections.appointment} doctor={doctor} fees={templateSections.fees} />
     </div>
   )
 }

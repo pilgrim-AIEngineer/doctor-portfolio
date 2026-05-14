@@ -1,10 +1,11 @@
 // ProfileSideNav — accordion group nav with visibility toggles, reorder arrows, completion dots
 'use client'
 
-import { useState, useCallback, useTransition } from 'react'
+import { useState, useCallback } from 'react'
 import { Eye, EyeOff, ChevronDown, ChevronRight, ArrowUp, ArrowDown, Lock } from 'lucide-react'
 import { updateSectionOrder } from '@/app/actions/profile'
 import { PROFILE_GROUPS, PRO_ONLY_SECTIONS, SECTION_LABELS } from '@/lib/constants'
+import Toast from '@/components/ui/Toast'
 import type { SectionKey, SectionMeta } from '@/types/Profile'
 
 interface ProfileSideNavProps {
@@ -32,7 +33,7 @@ export default function ProfileSideNav({
 }: ProfileSideNavProps) {
   const [openGroups, setOpenGroups] = useState<Set<string>>(new Set(['identity', 'practice']))
   const [meta, setMeta] = useState<Record<string, SectionMeta>>(() => buildMetaMap(sectionMeta))
-  const [, startTransition] = useTransition()
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
 
   const isPro = doctorPlan === 'pro'
 
@@ -45,29 +46,30 @@ export default function ProfileSideNav({
   }
 
   const syncToServer = useCallback(
-    (updatedMeta: Record<string, SectionMeta>) => {
+    async (updatedMeta: Record<string, SectionMeta>, prevMeta: Record<string, SectionMeta>) => {
       const updates = Object.values(updatedMeta).map((m) => ({
         section_key: m.section_key,
         display_order: m.display_order,
         is_visible: m.is_visible,
       }))
-      startTransition(() => {
-        updateSectionOrder(updates)
-      })
+      const result = await updateSectionOrder(updates)
+      if (result.error) {
+        setMeta(prevMeta)
+        setToast({ message: 'Failed to save. Please try again.', type: 'error' })
+      }
     },
     []
   )
 
   function toggleVisibility(sectionKey: SectionKey) {
-    setMeta((prev) => {
-      const current = prev[sectionKey]
-      const updated = {
-        ...prev,
-        [sectionKey]: { ...current, is_visible: !current?.is_visible },
-      }
-      syncToServer(updated)
-      return updated
-    })
+    const prev = meta
+    const current = prev[sectionKey]
+    const updated = {
+      ...prev,
+      [sectionKey]: { ...current, is_visible: !current?.is_visible },
+    }
+    setMeta(updated)
+    syncToServer(updated, prev)
   }
 
   function moveSection(groupSections: readonly string[], sectionKey: string, direction: 'up' | 'down') {
@@ -83,15 +85,14 @@ export default function ProfileSideNav({
     const aOrder = meta[aKey]?.display_order ?? 0
     const bOrder = meta[bKey]?.display_order ?? 0
 
-    setMeta((prev) => {
-      const updated = {
-        ...prev,
-        [aKey]: { ...prev[aKey], display_order: bOrder },
-        [bKey]: { ...prev[bKey], display_order: aOrder },
-      }
-      syncToServer(updated)
-      return updated
-    })
+    const prev = meta
+    const updated = {
+      ...prev,
+      [aKey]: { ...prev[aKey], display_order: bOrder },
+      [bKey]: { ...prev[bKey], display_order: aOrder },
+    }
+    setMeta(updated)
+    syncToServer(updated, prev)
   }
 
   return (
@@ -178,6 +179,10 @@ export default function ProfileSideNav({
           </div>
         )
       })}
+
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+      )}
     </nav>
   )
 }

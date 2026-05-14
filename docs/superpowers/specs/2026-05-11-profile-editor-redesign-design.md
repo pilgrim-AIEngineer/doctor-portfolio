@@ -63,7 +63,7 @@ The profile page is redesigned as a two-column layout:
 | Group | Sections |
 |---|---|
 | Identity | personal, specialization, qualifications, registration |
-| Practice | experience, services, clinic_info, fees, locations |
+| Practice | experience, services, clinic_info, fees, locations | Note: clinic_info and locations both appear; locations shown only if Pro plan |
 | Credibility | achievements, research, gallery |
 | Patient | testimonials, faq, insurance, languages |
 | Connect | appointment, social |
@@ -134,6 +134,8 @@ ALTER TABLE profiles ADD COLUMN display_order integer NOT NULL DEFAULT 0;
 ```
 
 RLS policies remain unchanged — doctors can only write their own rows.
+
+`display_order` is a global integer per doctor (not scoped per group). The client renders sections within their fixed group boundaries and sorts by `display_order` within each group. Reordering a section only moves it among siblings in the same group — cross-group moves are not supported.
 
 ### New server action — `updateSectionOrder`
 ```typescript
