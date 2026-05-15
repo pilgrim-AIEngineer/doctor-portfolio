@@ -73,7 +73,11 @@ const fetchPortfolioData = cache(async (slug: string): Promise<PortfolioData> =>
   const rawTemplate = templateRes.data?.templates as unknown as Template | undefined
   const template: Template = rawTemplate ?? DEFAULT_TEMPLATE
 
-  return { doctor: doctor as Doctor, sections, template }
+  // Prefer the name the doctor set in their dashboard personal section over the registration name
+  const personal = sections.personal as { name?: string } | undefined
+  const displayName = personal?.name?.trim() || doctor.name
+
+  return { doctor: { ...doctor, name: displayName } as Doctor, sections, template }
 })
 
 export async function generateStaticParams() {

@@ -84,7 +84,7 @@ export const SECTION_LABELS: Record<string, string> = {
 }
 
 export const SECTION_ORDER_DEBOUNCE_MS = 300
-export const ABOUT_MAX_CHARS = 500
+export const ABOUT_MAX_CHARS = 5000
 export const LOCATIONS_MAX = 5
 export const FAQ_MAX_ITEMS = 10
 export const FEE_NOTE_MAX_CHARS = 200

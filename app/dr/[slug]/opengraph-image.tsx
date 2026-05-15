@@ -31,7 +31,7 @@ export default async function OgImage({ params }: Props) {
     .eq('slug', params.slug)
     .single()
 
-  const name = doctor?.name ?? 'DocFolio'
+  let name = doctor?.name ?? 'DocFolio'
   const specialty = doctor?.specialty ?? 'Indian Doctor Portfolios'
   let photoUrl: string | null = null
 
@@ -43,8 +43,9 @@ export default async function OgImage({ params }: Props) {
       .eq('section_key', 'personal')
       .single()
 
-    const personal = profile?.data as { photo?: string } | null
+    const personal = profile?.data as { name?: string; photo?: string } | null
     photoUrl = personal?.photo ?? null
+    if (personal?.name?.trim()) name = personal.name.trim()
   }
 
   const initials = getInitials(name)
@@ -64,7 +65,9 @@ export default async function OgImage({ params }: Props) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '48px', flex: 1 }}>
           {photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
+              alt=""
               src={photoUrl}
               width={140}
               height={140}
