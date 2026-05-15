@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { authSchema } from '@/lib/validations/profile'
 import type { AuthInput } from '@/lib/validations/profile'
-import { sendMagicLink } from '@/app/actions/auth'
+import { sendEmailOtp } from '@/app/actions/auth'
 
 interface Props {
   onEmailSent: (email: string) => void
@@ -26,7 +26,7 @@ export default function EmailStep({ onEmailSent }: Props) {
     formData.append('email', data.email)
 
     startTransition(async () => {
-      const result = await sendMagicLink(formData)
+      const result = await sendEmailOtp(formData)
       if (result.error) {
         setError('email', { message: result.error })
       } else {
@@ -62,7 +62,7 @@ export default function EmailStep({ onEmailSent }: Props) {
         {isPending && (
           <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
         )}
-        {isPending ? 'Sending link…' : 'Send login link'}
+        {isPending ? 'Sending code…' : 'Send code'}
       </button>
     </form>
   )

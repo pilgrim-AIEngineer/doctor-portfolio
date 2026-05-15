@@ -1,11 +1,11 @@
-// Multi-step auth flow: email → check-email (magic link sent)
+// Multi-step auth flow: email → otp (code entry)
 'use client'
 
 import { useState } from 'react'
 import EmailStep from './PhoneStep'
-import CheckEmailStep from './OtpStep'
+import OtpStep from './OtpStep'
 
-type Step = 'email' | 'check-email'
+type Step = 'email' | 'otp'
 
 export default function LoginFlow() {
   const [step, setStep] = useState<Step>('email')
@@ -13,7 +13,7 @@ export default function LoginFlow() {
 
   function handleEmailSent(sentEmail: string) {
     setEmail(sentEmail)
-    setStep('check-email')
+    setStep('otp')
   }
 
   function handleChangeEmail() {
@@ -24,8 +24,8 @@ export default function LoginFlow() {
     <>
       {step === 'email' && <EmailStep onEmailSent={handleEmailSent} />}
 
-      {step === 'check-email' && (
-        <CheckEmailStep email={email} onChangeEmail={handleChangeEmail} />
+      {step === 'otp' && (
+        <OtpStep email={email} onChangeEmail={handleChangeEmail} />
       )}
     </>
   )

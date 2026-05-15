@@ -161,7 +161,7 @@ export const authSchema = z.object({
   email: z.string().email('Enter a valid email address'),
 })
 export const otpSchema = z.object({
-  otp: z.string().length(6, 'OTP must be 6 digits').regex(/^\d{6}$/, 'OTP must be numeric'),
+  otp: z.string().length(8, 'OTP must be 8 digits').regex(/^\d{8}$/, 'OTP must be numeric'),
 })
 export const onboardingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),

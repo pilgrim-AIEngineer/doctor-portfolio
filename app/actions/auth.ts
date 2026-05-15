@@ -1,13 +1,12 @@
-// Server actions for magic-link email authentication via Supabase
+// Server actions for email OTP authentication via Supabase
 'use server'
 
 import { redirect } from 'next/navigation'
 import { createServerClient } from '@/lib/supabase/server'
-import { authSchema, onboardingSchema } from '@/lib/validations/profile'
-import { APP_URL } from '@/lib/constants'
+import { authSchema, otpSchema, onboardingSchema } from '@/lib/validations/profile'
 import { slugify } from '@/lib/utils'
 
-export async function sendMagicLink(formData: FormData): Promise<{ error?: string }> {
+export async function sendEmailOtp(formData: FormData): Promise<{ error?: string }> {
   try {
     const raw = { email: formData.get('email') as string }
     const validated = authSchema.safeParse(raw)
@@ -19,22 +18,61 @@ export async function sendMagicLink(formData: FormData): Promise<{ error?: strin
     const supabase = createServerClient()
     const { error } = await supabase.auth.signInWithOtp({
       email: validated.data.email,
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: `${APP_URL}/auth/callback`,
-      },
+      options: { shouldCreateUser: true },
     })
 
     if (error) {
-      console.error('[sendMagicLink]', error.message)
-      return { error: 'Could not send login link. Please try again.' }
+      console.error('[sendEmailOtp]', error.message)
+      return { error: 'Could not send code. Please try again.' }
     }
 
     return {}
   } catch (err) {
-    console.error('[sendMagicLink] unexpected', err)
+    console.error('[sendEmailOtp] unexpected', err)
     return { error: 'Unexpected error. Please try again.' }
   }
+}
+
+export async function verifyEmailOtp(email: string, token: string): Promise<{ error?: string }> {
+  let destination: string | null = null
+
+  try {
+    const validated = otpSchema.safeParse({ otp: token })
+    if (!validated.success) {
+      return { error: validated.error.flatten().fieldErrors.otp?.[0] ?? 'Invalid code.' }
+    }
+
+    const supabase = createServerClient()
+    const { error } = await supabase.auth.verifyOtp({ email, token, type: 'email' })
+
+    if (error) {
+      console.error('[verifyEmailOtp]', error.message)
+      return { error: 'Invalid or expired code. Please try again.' }
+    }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) {
+      return { error: 'Session expired. Please log in again.' }
+    }
+
+    const { data: doctor } = await supabase
+      .from('doctors')
+      .select('id')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    destination = doctor ? '/dashboard/profile' : '/onboarding'
+  } catch (err) {
+    console.error('[verifyEmailOtp] unexpected', err)
+    return { error: 'Unexpected error. Please try again.' }
+  }
+
+  // redirect() must be outside try/catch — it throws a special Next.js error
+  if (!destination) return { error: 'Unexpected error. Please try again.' }
+  redirect(destination)
 }
 
 export async function completeOnboarding(formData: FormData): Promise<{ error?: string }> {
