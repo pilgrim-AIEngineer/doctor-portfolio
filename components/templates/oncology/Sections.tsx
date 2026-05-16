@@ -15,6 +15,7 @@ import {
 import type { Doctor } from '@/types/Doctor'
 import type { LocationEntry } from '@/types/Profile'
 import GalleryLightbox from '@/components/templates/classic/GalleryLightbox'
+import TestimonialsCarousel from './TestimonialsCarousel'
 import {
   computeExperienceYears,
   getAchievementItems,
@@ -216,13 +217,7 @@ function Testimonials({ sections }: Pick<SectionsProps, 'sections'>) {
   if (!hasItems(sections.testimonials?.reviews)) return null
   return (
     <SectionCard title="Patient Feedback" icon={<ShieldCheck size={20} />} wide>
-      <div className="grid gap-4 md:grid-cols-2">
-        {sections.testimonials.reviews.map((review) => (
-          <blockquote key={review} className="rounded-3xl border border-white/10 bg-white/[0.06] p-5 text-slate-200">
-            <p className="leading-7">{review}</p>
-          </blockquote>
-        ))}
-      </div>
+      <TestimonialsCarousel reviews={sections.testimonials.reviews} />
     </SectionCard>
   )
 }

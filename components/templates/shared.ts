@@ -17,6 +17,7 @@ import type {
   ServicesSection,
   SocialSection,
   SpecializationSection,
+  TestimonialEntry,
 } from '@/types/Profile'
 
 export interface AchievementsData {
@@ -42,7 +43,7 @@ export interface ResearchData {
 }
 
 export interface TestimonialsData {
-  reviews?: string[]
+  reviews?: TestimonialEntry[]
 }
 
 export interface TemplateSections {
@@ -89,7 +90,7 @@ export function getTemplateSections(
   }
 }
 
-export function hasItems(items?: string[]): items is string[] {
+export function hasItems<T>(items?: T[]): items is T[] {
   return Array.isArray(items) && items.length > 0
 }
 
