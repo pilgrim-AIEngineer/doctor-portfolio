@@ -1,4 +1,5 @@
 // Dashboard home — assembles portfolio status card, profile strength, and stats row
+import Link from 'next/link'
 import type { SectionKey } from '@/types/Profile'
 import ProfileStrength from '@/components/dashboard/ProfileStrength'
 import PortfolioStatusCard from '@/components/dashboard/PortfolioStatusCard'
@@ -43,13 +44,13 @@ export default function DashboardHome({ doctor, sections, portfolioUrl, lastUpda
               { label: 'Template', href: '/dashboard/template' },
               { label: 'Preview', href: '/dashboard/preview' },
             ].map((action) => (
-              <a
+              <Link
                 key={action.href}
                 href={action.href}
                 className="flex items-center justify-center rounded-lg border border-gray-200 px-2 py-2 text-center text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
               >
                 {action.label}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
