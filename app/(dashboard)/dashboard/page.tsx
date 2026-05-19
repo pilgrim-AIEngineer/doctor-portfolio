@@ -30,6 +30,9 @@ export default async function DashboardPage() {
 
   if (doctorRes.error || !doctorRes.data) redirect('/onboarding')
 
+  if (profilesRes.error) {
+    console.error('[DashboardPage] profiles fetch failed', profilesRes.error.message)
+  }
   const doctor = doctorRes.data
   const profiles = profilesRes.data ?? []
 
