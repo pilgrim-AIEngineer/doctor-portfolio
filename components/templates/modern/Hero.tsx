@@ -5,6 +5,7 @@ import type { Doctor } from '@/types/Doctor'
 import {
   computeExperienceYears,
   getContactLinks,
+  getInitials,
   getServiceCount,
   getSpecializationCount,
   type TemplateSections,
@@ -25,10 +26,14 @@ export default function ModernHero({ doctor, sections }: HeroProps) {
       <div className="relative mx-auto grid max-w-7xl gap-8 px-6 py-10 md:grid-cols-[0.95fr_1.05fr] md:py-16">
         <div className="flex flex-col justify-center animate-template-rise">
           <div className="mb-7 flex flex-wrap items-center gap-3 text-sm text-slate-300">
-            {doctor.is_verified && (
+            {doctor.is_verified ? (
               <span className="inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-white/10 px-3 py-1 font-semibold text-cyan-100 backdrop-blur">
                 <ShieldCheck size={15} />
                 NMC Verified
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 font-medium text-slate-300 backdrop-blur">
+                NMC: {doctor.nmc_number}
               </span>
             )}
             <span className="inline-flex items-center gap-2 text-cyan-100">
@@ -36,7 +41,7 @@ export default function ModernHero({ doctor, sections }: HeroProps) {
               {doctor.specialty}
             </span>
           </div>
-          <h1 className="max-w-3xl text-5xl font-semibold leading-none tracking-tight md:text-7xl">
+          <h1 className="max-w-3xl text-3xl font-semibold leading-none tracking-tight sm:text-5xl md:text-7xl">
             Dr. {doctor.name}
           </h1>
           {personal?.tagline && (
@@ -72,8 +77,10 @@ export default function ModernHero({ doctor, sections }: HeroProps) {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center text-7xl font-semibold text-white/20">
-                  Dr
+                <div className="flex h-full items-center justify-center">
+                  <div className="flex h-28 w-28 items-center justify-center rounded-full border border-white/20 bg-white/10 text-4xl font-bold text-white">
+                    {getInitials(doctor.name)}
+                  </div>
                 </div>
               )}
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-modern-ink/90 to-transparent p-6">
