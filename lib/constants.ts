@@ -116,6 +116,7 @@ export const APPOINTMENT_STATUS = {
 } as const
 
 export const DASHBOARD_NAV = [
+  { label: 'Home',         shortLabel: 'Home',     href: '/dashboard' },
   { label: 'Profile',      shortLabel: 'Profile',  href: '/dashboard/profile' },
   { label: 'Template',     shortLabel: 'Template', href: '/dashboard/template' },
   { label: 'Preview',      shortLabel: 'Preview',  href: '/dashboard/preview' },

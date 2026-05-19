@@ -4,6 +4,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
+  Home,
   User,
   LayoutTemplate,
   Eye,
@@ -14,6 +15,7 @@ import {
 import { DASHBOARD_NAV } from '@/lib/constants'
 
 const NAV_ICONS = {
+  '/dashboard':              Home,
   '/dashboard/profile':      User,
   '/dashboard/template':     LayoutTemplate,
   '/dashboard/preview':      Eye,
@@ -30,7 +32,7 @@ export default function MobileTabBar() {
       <div className="flex">
         {DASHBOARD_NAV.map((item) => {
           const Icon = NAV_ICONS[item.href as keyof typeof NAV_ICONS]
-          const isActive = pathname.startsWith(item.href)
+          const isActive = item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href)
           return (
             <Link
               key={item.href}
