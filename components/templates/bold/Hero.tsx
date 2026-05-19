@@ -61,9 +61,6 @@ export default function BoldHero({ doctor, sections }: HeroProps) {
           <h1 className="font-serif text-3xl font-bold leading-none tracking-tight text-white sm:text-5xl md:text-7xl">
             Dr. {doctor.name}
           </h1>
-          <p className="mt-5 text-lg font-semibold uppercase tracking-[0.28em] text-gold-300">
-            {doctor.specialty}
-          </p>
           {personal?.tagline && (
             <p className="mt-7 max-w-2xl text-lg leading-8 text-gray-300">{personal.tagline}</p>
           )}
