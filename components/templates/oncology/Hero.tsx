@@ -12,6 +12,7 @@ import type { Doctor } from '@/types/Doctor'
 import {
   computeExperienceYears,
   getContactLinks,
+  getInitials,
   getServiceCount,
   getSpecializationCount,
   type TemplateSections,
@@ -58,16 +59,16 @@ export default function OncologyHero({ doctor, sections }: HeroProps) {
         </div>
       </div>
 
-      <section id="section-personal" className="relative mx-auto grid min-h-[660px] max-w-7xl items-center gap-10 px-6 py-12 md:grid-cols-[1.1fr_0.9fr] md:py-16">
+      <section id="section-personal" className="relative mx-auto grid max-w-7xl items-center gap-10 px-6 py-12 md:grid-cols-[1.1fr_0.9fr] md:min-h-[660px] md:py-16">
         <div className="animate-template-rise">
           <div className="mb-8 h-1.5 w-28 rounded-full bg-gradient-to-r from-oncology-gold via-oncology-teal to-oncology-aura shadow-oncology" />
-          <h1 className="max-w-3xl text-5xl font-semibold leading-[1.02] text-white md:text-7xl">
+          <h1 className="max-w-3xl text-3xl font-semibold leading-[1.02] text-white sm:text-5xl md:text-7xl">
             Dr. {doctor.name}
           </h1>
           <p className="mt-5 max-w-2xl text-2xl font-semibold text-oncology-aura md:text-3xl">
             {specialization?.primary ?? doctor.specialty}
           </p>
-          <p className="mt-6 max-w-2xl text-xl leading-8 text-slate-200">
+          <p className="mt-6 max-w-2xl text-base leading-7 text-slate-200 sm:text-xl sm:leading-8">
             {personal?.tagline ??
               `Cancer care planned with precision, clarity, and rapid clinic access for every treatment decision.`}
           </p>
@@ -115,8 +116,10 @@ export default function OncologyHero({ doctor, sections }: HeroProps) {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center text-7xl font-semibold text-oncology-aura/30">
-                  Dr
+                <div className="flex h-full items-center justify-center">
+                  <div className="flex h-28 w-28 items-center justify-center rounded-full border border-oncology-aura/30 bg-oncology-teal/10 text-4xl font-semibold text-oncology-aura">
+                    {getInitials(doctor.name)}
+                  </div>
                 </div>
               )}
             </div>
