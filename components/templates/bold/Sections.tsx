@@ -30,12 +30,14 @@ interface SectionsProps {
 }
 
 function EditorialSection({
+  id,
   title,
   icon,
   children,
   light = false,
   wide = false,
 }: {
+  id?: string
   title: string
   icon: ReactNode
   children: ReactNode
@@ -48,7 +50,7 @@ function EditorialSection({
   const heading = light ? 'text-navy' : 'text-white'
 
   return (
-    <section className={wide ? 'lg:col-span-2' : undefined}>
+    <section id={id} className={wide ? 'lg:col-span-2' : undefined}>
       <div className={`h-full border p-6 shadow-gold md:p-8 ${shell}`}>
         <div className="mb-6 flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center border border-gold-300/40 text-gold-400">
@@ -87,7 +89,7 @@ function ListItems({ items, light = false }: { items?: string[]; light?: boolean
 function About({ sections }: SectionsProps) {
   if (!sections.personal?.about) return null
   return (
-    <EditorialSection title="Signature Care" icon={<User2 size={20} />} light wide>
+    <EditorialSection id="section-personal" title="Signature Care" icon={<User2 size={20} />} light wide>
       <p className="max-w-4xl whitespace-pre-line text-lg leading-8 text-gray-700">
         {sections.personal.about}
       </p>
@@ -106,7 +108,7 @@ function Services({ sections }: SectionsProps) {
   if (!groups.length) return null
 
   return (
-    <EditorialSection title="Services" icon={<Stethoscope size={20} />} wide>
+    <EditorialSection id="section-services" title="Services" icon={<Stethoscope size={20} />} wide>
       <div className="grid gap-5 md:grid-cols-3">
         {groups.map((group) => (
           <div key={group.title} className="border border-gold-300/20 bg-white/5 p-5">
@@ -124,10 +126,10 @@ function Services({ sections }: SectionsProps) {
 function Experience({ sections }: SectionsProps) {
   const data = sections.experience
   if (!data) return null
-  const years = computeExperienceYears(data)
+  const years = computeExperienceYears(data, sections.personal)
   const hospitalItems = getHospitalItems(data)
   return (
-    <EditorialSection title="Experience" icon={<Award size={20} />}>
+    <EditorialSection id="section-experience" title="Experience" icon={<Award size={20} />}>
       {years > 0 && (
         <div className="mb-5 flex items-end gap-3">
           <span className="font-serif text-6xl font-bold text-gold-300">{years}</span>
@@ -146,7 +148,7 @@ function Qualifications({ sections }: SectionsProps) {
   const degrees = getQualificationItems(data.degrees ?? [])
   const fellowships = getQualificationItems(data.fellowships ?? [])
   return (
-    <EditorialSection title="Qualifications" icon={<GraduationCap size={20} />} light>
+    <EditorialSection id="section-qualifications" title="Qualifications" icon={<GraduationCap size={20} />} light>
       <div className="space-y-5">
         <ListItems items={degrees} light />
         <ListItems items={fellowships} light />
@@ -159,7 +161,7 @@ function Specialization({ sections }: SectionsProps) {
   const data = sections.specialization
   if (!data) return null
   return (
-    <EditorialSection title="Specialization" icon={<Shield size={20} />} light>
+    <EditorialSection id="section-specialization" title="Specialization" icon={<Shield size={20} />} light>
       <p className="mb-4 text-lg font-semibold text-navy">{data.primary}</p>
       <div className="flex flex-wrap gap-2">
         {data.sub_specialties.map((item) => <GoldPill key={item} label={item} light />)}
@@ -185,7 +187,7 @@ function Clinic({ sections }: SectionsProps) {
   if (locationEntries && locationEntries.length > 0) {
     const sorted = [...locationEntries].sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0))
     return (
-      <EditorialSection title="Clinic" icon={<MapPin size={20} />} wide>
+      <EditorialSection id="section-clinic_info" title="Clinic" icon={<MapPin size={20} />} wide>
         <div className="grid gap-4 md:grid-cols-2">
           {sorted.map((loc) => <LocationCard key={loc.name} loc={loc} />)}
         </div>
@@ -195,7 +197,7 @@ function Clinic({ sections }: SectionsProps) {
   const data = sections.clinicInfo
   if (!data) return null
   return (
-    <EditorialSection title="Clinic" icon={<MapPin size={20} />} wide>
+    <EditorialSection id="section-clinic_info" title="Clinic" icon={<MapPin size={20} />} wide>
       <div className="grid gap-3 md:grid-cols-2">
         {data.address && <InfoRow icon={<MapPin size={18} />} text={data.address} />}
         {data.timings && <InfoRow icon={<Clock size={18} />} text={data.timings} />}
@@ -228,7 +230,7 @@ function Gallery({ sections }: SectionsProps) {
   const images = getGalleryImages(sections.gallery)
   if (!images.length) return null
   return (
-    <EditorialSection title="Gallery" icon={<Images size={20} />} light wide>
+    <EditorialSection id="section-gallery" title="Gallery" icon={<Images size={20} />} light wide>
       <div className="rounded-none border border-gold-300/30 bg-white p-3">
         <GalleryLightbox images={images} />
       </div>
@@ -242,7 +244,7 @@ function Extras({ sections }: SectionsProps) {
   const hasExtras = achievements.length || hasItems(sections.languages?.spoken) || hasItems(sections.insurance?.panels) || socialLinks.length
   if (!hasExtras) return null
   return (
-    <EditorialSection title="Credentials" icon={<Award size={20} />} wide>
+    <EditorialSection id="section-languages" title="Credentials" icon={<Award size={20} />} wide>
       <div className="grid gap-5 md:grid-cols-3">
         <MiniList title="Achievements" items={achievements} />
         <MiniList title="Languages" items={sections.languages?.spoken} />

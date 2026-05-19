@@ -1,10 +1,12 @@
 // AppointmentForm — edits the "appointment" profile section
 'use client'
 
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import { appointmentSectionSchema, type AppointmentSectionInput } from '@/lib/validations/profile'
 import SaveStatus from '../SaveStatus'
 import { PHONE_PREFIX } from '@/lib/constants'
@@ -24,7 +26,11 @@ export default function AppointmentForm({ data }: { data: unknown }) {
     },
   })
   const { register, watch, formState: { errors } } = form
-  const status = useAutoSave(watch(), (d) => saveProfileSection('appointment', d))
+  const snapshot = watch()
+  const status = useAutoSave(snapshot, (d) => saveProfileSection('appointment', d))
+  const setSection = useDraftStore((s) => s.setSection)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('appointment', snapshot) }, [JSON.stringify(snapshot)])
 
   return (
     <div className="space-y-5">

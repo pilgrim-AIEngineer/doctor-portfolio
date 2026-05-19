@@ -1,8 +1,8 @@
-// ProfileSideNav — accordion group nav with visibility toggles, reorder arrows, completion dots
+// ProfileSideNav — accordion group nav with visibility toggles and completion dots
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Eye, EyeOff, ChevronDown, ChevronRight, ArrowUp, ArrowDown, Lock } from 'lucide-react'
+import { Eye, EyeOff, ChevronDown, ChevronRight, Lock } from 'lucide-react'
 import { updateSectionOrder } from '@/app/actions/profile'
 import { PROFILE_GROUPS, PRO_ONLY_SECTIONS, SECTION_LABELS } from '@/lib/constants'
 import Toast from '@/components/ui/Toast'
@@ -72,29 +72,6 @@ export default function ProfileSideNav({
     syncToServer(updated, prev)
   }
 
-  function moveSection(groupSections: readonly string[], sectionKey: string, direction: 'up' | 'down') {
-    const orderedInGroup = [...groupSections].sort(
-      (a, b) => (meta[a]?.display_order ?? 0) - (meta[b]?.display_order ?? 0)
-    )
-    const idx = orderedInGroup.indexOf(sectionKey)
-    const swapIdx = direction === 'up' ? idx - 1 : idx + 1
-    if (swapIdx < 0 || swapIdx >= orderedInGroup.length) return
-
-    const aKey = orderedInGroup[idx]
-    const bKey = orderedInGroup[swapIdx]
-    const aOrder = meta[aKey]?.display_order ?? 0
-    const bOrder = meta[bKey]?.display_order ?? 0
-
-    const prev = meta
-    const updated = {
-      ...prev,
-      [aKey]: { ...prev[aKey], display_order: bOrder },
-      [bKey]: { ...prev[bKey], display_order: aOrder },
-    }
-    setMeta(updated)
-    syncToServer(updated, prev)
-  }
-
   return (
     <nav className="w-56 flex-shrink-0">
       {PROFILE_GROUPS.map((group) => {
@@ -115,7 +92,7 @@ export default function ProfileSideNav({
 
             {isOpen && (
               <div className="ml-1 space-y-0.5">
-                {orderedSections.map((sectionKey, idx) => {
+                {orderedSections.map((sectionKey) => {
                   const key = sectionKey as SectionKey
                   const isActive = activeSection === key
                   const isFilled = sections[key] != null
@@ -146,22 +123,6 @@ export default function ProfileSideNav({
                         <Lock className="w-3.5 h-3.5 text-gray-400" />
                       ) : (
                         <div className="hidden group-hover:flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
-                          <button
-                            onClick={() => moveSection(group.sections, sectionKey, 'up')}
-                            disabled={idx === 0}
-                            className="p-0.5 text-gray-400 hover:text-gray-600 disabled:opacity-20"
-                            aria-label="Move up"
-                          >
-                            <ArrowUp className="w-3 h-3" />
-                          </button>
-                          <button
-                            onClick={() => moveSection(group.sections, sectionKey, 'down')}
-                            disabled={idx === orderedSections.length - 1}
-                            className="p-0.5 text-gray-400 hover:text-gray-600 disabled:opacity-20"
-                            aria-label="Move down"
-                          >
-                            <ArrowDown className="w-3 h-3" />
-                          </button>
                           <button
                             onClick={() => toggleVisibility(key)}
                             className="p-0.5 text-gray-400 hover:text-gray-600"

@@ -1,9 +1,10 @@
 // FAQForm — edits the "faq" profile section (Pro only)
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import type { FAQEntry } from '@/types/Profile'
 import { FAQ_MAX_ITEMS, FAQ_ANSWER_MAX_CHARS } from '@/lib/constants'
 import CardArrayInput from '../CardArrayInput'
@@ -61,7 +62,10 @@ export default function FAQForm({ data }: { data: unknown }) {
     setItems((prev) => prev.map((item, i) => (i === index ? updated : item)))
   }
 
+  const setSection = useDraftStore((s) => s.setSection)
   const status = useAutoSave({ items }, (d) => saveProfileSection('faq', d))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('faq', { items }) }, [JSON.stringify(items)])
 
   return (
     <div className="space-y-5">

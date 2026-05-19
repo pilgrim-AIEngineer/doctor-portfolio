@@ -21,6 +21,7 @@ export default function ModernAppointmentCTA({ appointment, doctor, fees }: Appo
 
   return (
     <>
+      <span id="section-appointment" aria-hidden="true" />
       <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
         {contact.practoUrl && (
           <a

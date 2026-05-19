@@ -17,6 +17,7 @@ export default function OncologyAppointmentCTA({ appointment, doctor, fees }: Ap
 
   return (
     <>
+      <span id="section-appointment" aria-hidden="true" />
       <section id="oncology-booking" className="relative overflow-hidden bg-oncology-midnight px-6 py-14 text-white md:py-20">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_22%,theme(colors.oncology.gold/0.16),transparent_26%),radial-gradient(circle_at_78%_42%,theme(colors.oncology.teal/0.18),transparent_32%)]" />
         <div className="relative mx-auto grid max-w-6xl gap-8 rounded-[2.25rem] border border-white/10 bg-white/[0.07] p-6 shadow-glass backdrop-blur-2xl md:grid-cols-[0.85fr_1fr] md:p-8">

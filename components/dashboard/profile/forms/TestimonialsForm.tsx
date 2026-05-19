@@ -1,10 +1,11 @@
 // TestimonialsForm — edits the "testimonials" profile section
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Star } from 'lucide-react'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import type { TestimonialEntry } from '@/types/Profile'
 import { TESTIMONIAL_REVIEW_MAX_CHARS } from '@/lib/constants'
 import CardArrayInput from '../CardArrayInput'
@@ -14,6 +15,14 @@ const INPUT = 'w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:
 const LABEL = 'block text-xs font-medium text-gray-600 mb-1'
 
 const emptyEntry = (): TestimonialEntry => ({ patient_name: '', review: '', rating: 5 })
+
+function normalizeEntry(r: TestimonialEntry): TestimonialEntry {
+  return {
+    patient_name: r.patient_name ?? '',
+    review: r.review ?? '',
+    rating: (r.rating ?? 5) as 1 | 2 | 3 | 4 | 5,
+  }
+}
 
 function TestimonialCard({
   item,
@@ -74,13 +83,18 @@ function TestimonialCard({
 
 export default function TestimonialsForm({ data }: { data: unknown }) {
   const existing = data as { reviews?: TestimonialEntry[] } | undefined
-  const [reviews, setReviews] = useState<TestimonialEntry[]>(existing?.reviews ?? [])
+  const [reviews, setReviews] = useState<TestimonialEntry[]>(
+    (existing?.reviews ?? []).map(normalizeEntry)
+  )
 
   function updateReview(index: number, updated: TestimonialEntry) {
     setReviews((prev) => prev.map((r, i) => (i === index ? updated : r)))
   }
 
+  const setSection = useDraftStore((s) => s.setSection)
   const status = useAutoSave({ reviews }, (d) => saveProfileSection('testimonials', d))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('testimonials', { reviews }) }, [JSON.stringify(reviews)])
 
   return (
     <div className="space-y-5">

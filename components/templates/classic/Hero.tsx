@@ -14,7 +14,7 @@ export default function ClassicHero({ doctor, sections }: HeroProps) {
   const contact = getContactLinks(appointment, doctor)
 
   return (
-    <section className="relative overflow-hidden bg-white">
+    <section id="section-personal" className="relative overflow-hidden bg-white">
       <div className="absolute inset-0 bg-[linear-gradient(90deg,theme(colors.clinical.line)_1px,transparent_1px),linear-gradient(theme(colors.clinical.line)_1px,transparent_1px)] bg-[size:44px_44px] opacity-40" />
       <div className="relative mx-auto grid max-w-6xl gap-10 px-6 pb-14 pt-10 md:grid-cols-[1.1fr_0.9fr] md:pb-20 md:pt-16">
         <div className="animate-template-rise">
@@ -84,7 +84,7 @@ export default function ClassicHero({ doctor, sections }: HeroProps) {
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3">
               {(() => {
-                const years = computeExperienceYears(experience)
+                const years = computeExperienceYears(experience, personal)
                 return years > 0 ? (
                   <div className="rounded-2xl bg-clinical-soft p-4">
                     <p className="text-3xl font-semibold text-brand-700">{years}</p>

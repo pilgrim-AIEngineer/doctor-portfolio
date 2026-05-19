@@ -26,7 +26,7 @@ export default function OncologyHero({ doctor, sections }: HeroProps) {
   const { personal, clinicInfo, appointment, experience, specialization, services } = sections
   const contact = getContactLinks(appointment, doctor)
   const careAreas = getSpecializationCount(specialization) + getServiceCount(services)
-  const experienceYears = computeExperienceYears(experience)
+  const experienceYears = computeExperienceYears(experience, personal)
 
   return (
     <header className="relative overflow-hidden bg-oncology-midnight text-white">
@@ -58,7 +58,7 @@ export default function OncologyHero({ doctor, sections }: HeroProps) {
         </div>
       </div>
 
-      <section className="relative mx-auto grid min-h-[660px] max-w-7xl items-center gap-10 px-6 py-12 md:grid-cols-[1.1fr_0.9fr] md:py-16">
+      <section id="section-personal" className="relative mx-auto grid min-h-[660px] max-w-7xl items-center gap-10 px-6 py-12 md:grid-cols-[1.1fr_0.9fr] md:py-16">
         <div className="animate-template-rise">
           <div className="mb-8 h-1.5 w-28 rounded-full bg-gradient-to-r from-oncology-gold via-oncology-teal to-oncology-aura shadow-oncology" />
           <h1 className="max-w-3xl text-5xl font-semibold leading-[1.02] text-white md:text-7xl">

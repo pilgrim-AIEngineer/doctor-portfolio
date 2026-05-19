@@ -1,7 +1,7 @@
 // Dashboard layout — auth guard, doctor fetch, sidebar + mobile tab bar
 import { redirect } from 'next/navigation'
 import { createServerClient } from '@/lib/supabase/server'
-import Sidebar from '@/components/dashboard/Sidebar'
+import TopNav from '@/components/dashboard/TopNav'
 import MobileTabBar from '@/components/dashboard/MobileTabBar'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -22,9 +22,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Sidebar name={doctor.name} specialty={doctor.specialty} slug={doctor.slug} />
+      <TopNav name={doctor.name} specialty={doctor.specialty} slug={doctor.slug} />
       <MobileTabBar />
-      <main className="md:pl-64 pb-16 md:pb-0">{children}</main>
+      <main className="md:pt-16 pb-16 md:pb-0">{children}</main>
     </div>
   )
 }

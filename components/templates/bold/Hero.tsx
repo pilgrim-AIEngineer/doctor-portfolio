@@ -14,7 +14,7 @@ export default function BoldHero({ doctor, sections }: HeroProps) {
   const contact = getContactLinks(appointment, doctor)
 
   return (
-    <section className="relative overflow-hidden bg-navy-dark">
+    <section id="section-personal" className="relative overflow-hidden bg-navy-dark">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-300 to-transparent" />
       <div className="absolute left-0 top-0 h-full w-1/3 bg-gradient-to-r from-gold-300/10 to-transparent" />
       <div className="relative mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-[0.9fr_1.1fr] md:py-20">

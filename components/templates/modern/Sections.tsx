@@ -105,11 +105,14 @@ function AnchorNav() {
 function About({ sections }: SectionsProps) {
   if (!sections.personal?.about) return null
   return (
-    <GlassSection id="modern-about" title="About" icon={<User2 size={20} />} wide>
-      <p className="max-w-4xl whitespace-pre-line text-lg leading-8 text-slate-300">
-        {sections.personal.about}
-      </p>
-    </GlassSection>
+    <>
+      <span id="section-personal" aria-hidden="true" />
+      <GlassSection id="modern-about" title="About" icon={<User2 size={20} />} wide>
+        <p className="max-w-4xl whitespace-pre-line text-lg leading-8 text-slate-300">
+          {sections.personal.about}
+        </p>
+      </GlassSection>
+    </>
   )
 }
 
@@ -124,37 +127,43 @@ function Services({ sections }: SectionsProps) {
   if (!groups.length) return null
 
   return (
-    <GlassSection id="modern-services" title="Services" icon={<Stethoscope size={20} />} wide>
-      <div className="grid gap-4 md:grid-cols-3">
-        {groups.map((group) => (
-          <div key={group.title} className="rounded-3xl border border-white/10 bg-modern-panel/70 p-5">
-            <p className="mb-4 text-xs font-bold uppercase text-cyan-200">{group.title}</p>
-            <div className="flex flex-wrap gap-2">
-              {group.items.map((item) => <Chip key={item} label={item} />)}
+    <>
+      <span id="section-services" aria-hidden="true" />
+      <GlassSection id="modern-services" title="Services" icon={<Stethoscope size={20} />} wide>
+        <div className="grid gap-4 md:grid-cols-3">
+          {groups.map((group) => (
+            <div key={group.title} className="rounded-3xl border border-white/10 bg-modern-panel/70 p-5">
+              <p className="mb-4 text-xs font-bold uppercase text-cyan-200">{group.title}</p>
+              <div className="flex flex-wrap gap-2">
+                {group.items.map((item) => <Chip key={item} label={item} />)}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </GlassSection>
+          ))}
+        </div>
+      </GlassSection>
+    </>
   )
 }
 
 function Experience({ sections }: SectionsProps) {
   const data = sections.experience
   if (!data) return null
-  const years = computeExperienceYears(data)
+  const years = computeExperienceYears(data, sections.personal)
   const hospitalItems = getHospitalItems(data)
   return (
-    <GlassSection id="modern-experience" title="Experience" icon={<Briefcase size={20} />}>
-      {years > 0 && (
-        <div className="mb-5 flex items-end gap-3">
-          <span className="text-6xl font-semibold text-cyan-200">{years}</span>
-          <span className="pb-2 text-sm font-bold uppercase text-slate-400">years</span>
-        </div>
-      )}
-      {data.current_affiliation && <p className="mb-4 font-semibold text-white">{data.current_affiliation}</p>}
-      <ItemList items={hospitalItems} />
-    </GlassSection>
+    <>
+      <span id="section-experience" aria-hidden="true" />
+      <GlassSection id="modern-experience" title="Experience" icon={<Briefcase size={20} />}>
+        {years > 0 && (
+          <div className="mb-5 flex items-end gap-3">
+            <span className="text-6xl font-semibold text-cyan-200">{years}</span>
+            <span className="pb-2 text-sm font-bold uppercase text-slate-400">years</span>
+          </div>
+        )}
+        {data.current_affiliation && <p className="mb-4 font-semibold text-white">{data.current_affiliation}</p>}
+        <ItemList items={hospitalItems} />
+      </GlassSection>
+    </>
   )
 }
 
@@ -164,7 +173,7 @@ function Qualifications({ sections }: SectionsProps) {
   const degrees = getQualificationItems(data.degrees ?? [])
   const fellowships = getQualificationItems(data.fellowships ?? [])
   return (
-    <GlassSection title="Qualifications" icon={<GraduationCap size={20} />}>
+    <GlassSection id="section-qualifications" title="Qualifications" icon={<GraduationCap size={20} />}>
       <div className="space-y-5">
         <ItemList items={degrees} />
         <ItemList items={fellowships} />
@@ -177,7 +186,7 @@ function Specialization({ sections }: SectionsProps) {
   const data = sections.specialization
   if (!data) return null
   return (
-    <GlassSection title="Specialization" icon={<Shield size={20} />}>
+    <GlassSection id="section-specialization" title="Specialization" icon={<Shield size={20} />}>
       <p className="mb-4 text-lg font-semibold text-white">{data.primary}</p>
       <div className="flex flex-wrap gap-2">
         {data.sub_specialties.map((item) => <Chip key={item} label={item} />)}
@@ -203,24 +212,30 @@ function Clinic({ sections }: SectionsProps) {
   if (locationEntries && locationEntries.length > 0) {
     const sorted = [...locationEntries].sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0))
     return (
-      <GlassSection id="modern-clinic" title="Clinic" icon={<MapPin size={20} />} wide>
-        <div className="grid gap-4 md:grid-cols-2">
-          {sorted.map((loc) => <LocationCard key={loc.name} loc={loc} />)}
-        </div>
-      </GlassSection>
+      <>
+        <span id="section-clinic_info" aria-hidden="true" />
+        <GlassSection id="modern-clinic" title="Clinic" icon={<MapPin size={20} />} wide>
+          <div className="grid gap-4 md:grid-cols-2">
+            {sorted.map((loc) => <LocationCard key={loc.name} loc={loc} />)}
+          </div>
+        </GlassSection>
+      </>
     )
   }
   const data = sections.clinicInfo
   if (!data) return null
   return (
-    <GlassSection id="modern-clinic" title="Clinic" icon={<MapPin size={20} />} wide>
-      <div className="grid gap-3 md:grid-cols-2">
-        {data.address && <InfoRow icon={<MapPin size={18} />} text={data.address} />}
-        {data.timings && <InfoRow icon={<Clock size={18} />} text={data.timings} />}
-        {data.phone && <InfoLink icon={<Phone size={18} />} href={`tel:${data.phone}`} text={data.phone} />}
-        {data.map_url && <InfoLink icon={<ExternalLink size={18} />} href={data.map_url} text="View on Map" />}
-      </div>
-    </GlassSection>
+    <>
+      <span id="section-clinic_info" aria-hidden="true" />
+      <GlassSection id="modern-clinic" title="Clinic" icon={<MapPin size={20} />} wide>
+        <div className="grid gap-3 md:grid-cols-2">
+          {data.address && <InfoRow icon={<MapPin size={18} />} text={data.address} />}
+          {data.timings && <InfoRow icon={<Clock size={18} />} text={data.timings} />}
+          {data.phone && <InfoLink icon={<Phone size={18} />} href={`tel:${data.phone}`} text={data.phone} />}
+          {data.map_url && <InfoLink icon={<ExternalLink size={18} />} href={data.map_url} text="View on Map" />}
+        </div>
+      </GlassSection>
+    </>
   )
 }
 
@@ -246,7 +261,7 @@ function Gallery({ sections }: SectionsProps) {
   const images = getGalleryImages(sections.gallery)
   if (!images.length) return null
   return (
-    <GlassSection title="Gallery" icon={<Images size={20} />} wide>
+    <GlassSection id="section-gallery" title="Gallery" icon={<Images size={20} />} wide>
       <GalleryLightbox images={images} />
     </GlassSection>
   )
@@ -258,7 +273,7 @@ function Extras({ sections }: SectionsProps) {
   const hasExtras = achievements.length || hasItems(sections.languages?.spoken) || hasItems(sections.insurance?.panels) || socialLinks.length
   if (!hasExtras) return null
   return (
-    <GlassSection title="More" icon={<Award size={20} />} wide>
+    <GlassSection id="section-languages" title="More" icon={<Award size={20} />} wide>
       <div className="grid gap-5 md:grid-cols-3">
         <MiniList title="Achievements" items={achievements} />
         <MiniList title="Languages" items={sections.languages?.spoken} />

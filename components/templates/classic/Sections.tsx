@@ -35,14 +35,16 @@ function SectionBand({
   icon,
   children,
   wide = false,
+  id,
 }: {
   title: string
   icon: ReactNode
   children: ReactNode
   wide?: boolean
+  id?: string
 }) {
   return (
-    <section className={wide ? 'md:col-span-2' : undefined}>
+    <section id={id} className={wide ? 'md:col-span-2' : undefined}>
       <div className="rounded-[1.75rem] border border-clinical-line bg-white/90 p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-clinical md:p-8">
         <div className="mb-6 flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-clinical-soft text-brand-700">
@@ -81,7 +83,7 @@ function ListItems({ items, accent = 'bg-brand-500' }: { items?: string[]; accen
 function About({ sections }: SectionsProps) {
   if (!sections.personal?.about) return null
   return (
-    <SectionBand title="About" icon={<HeartPulse size={20} />} wide>
+    <SectionBand id="section-personal" title="About" icon={<HeartPulse size={20} />} wide>
       <p className="max-w-4xl whitespace-pre-line text-lg leading-8 text-gray-700">
         {sections.personal.about}
       </p>
@@ -95,7 +97,7 @@ function Qualifications({ sections }: SectionsProps) {
   const degrees = getQualificationItems(data.degrees ?? [])
   const fellowships = getQualificationItems(data.fellowships ?? [])
   return (
-    <SectionBand title="Qualifications" icon={<GraduationCap size={20} />}>
+    <SectionBand id="section-qualifications" title="Qualifications" icon={<GraduationCap size={20} />}>
       <div className="space-y-6">
         <ListItems items={degrees} />
         <ListItems items={fellowships} accent="bg-brand-300" />
@@ -108,7 +110,7 @@ function Specialization({ sections }: SectionsProps) {
   const data = sections.specialization
   if (!data) return null
   return (
-    <SectionBand title="Specialization" icon={<Stethoscope size={20} />}>
+    <SectionBand id="section-specialization" title="Specialization" icon={<Stethoscope size={20} />}>
       <p className="mb-4 text-lg font-semibold text-clinical-ink">{data.primary}</p>
       <div className="flex flex-wrap gap-2">
         {data.sub_specialties.map((item) => <Pill key={item} label={item} />)}
@@ -120,10 +122,10 @@ function Specialization({ sections }: SectionsProps) {
 function Experience({ sections }: SectionsProps) {
   const data = sections.experience
   if (!data) return null
-  const years = computeExperienceYears(data)
+  const years = computeExperienceYears(data, sections.personal)
   const hospitalItems = getHospitalItems(data)
   return (
-    <SectionBand title="Experience" icon={<BookOpen size={20} />}>
+    <SectionBand id="section-experience" title="Experience" icon={<BookOpen size={20} />}>
       {years > 0 && (
         <div className="mb-5 inline-flex items-end gap-3 rounded-2xl bg-clinical-soft px-5 py-4">
           <span className="text-5xl font-semibold text-brand-700">{years}</span>
@@ -149,7 +151,7 @@ function Services({ sections }: SectionsProps) {
   if (!groups.length) return null
 
   return (
-    <SectionBand title="Services" icon={<Shield size={20} />} wide>
+    <SectionBand id="section-services" title="Services" icon={<Shield size={20} />} wide>
       <div className="grid gap-5 md:grid-cols-3">
         {groups.map((group) => (
           <div key={group.title} className="rounded-2xl bg-clinical-soft p-5">
@@ -181,7 +183,7 @@ function Clinic({ sections }: SectionsProps) {
   if (locationEntries && locationEntries.length > 0) {
     const sorted = [...locationEntries].sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0))
     return (
-      <SectionBand title="Clinic" icon={<MapPin size={20} />}>
+      <SectionBand id="section-clinic_info" title="Clinic" icon={<MapPin size={20} />}>
         <div className="space-y-4">
           {sorted.map((loc) => <LocationCard key={loc.name} loc={loc} />)}
         </div>
@@ -191,7 +193,7 @@ function Clinic({ sections }: SectionsProps) {
   const data = sections.clinicInfo
   if (!data) return null
   return (
-    <SectionBand title="Clinic" icon={<MapPin size={20} />}>
+    <SectionBand id="section-clinic_info" title="Clinic" icon={<MapPin size={20} />}>
       <div className="space-y-3 text-gray-700">
         {data.address && <InfoRow icon={<MapPin size={18} />} text={data.address} />}
         {data.timings && <InfoRow icon={<Clock size={18} />} text={data.timings} />}
@@ -224,7 +226,7 @@ function Achievements({ sections }: SectionsProps) {
   const items = getAchievementItems(sections.achievements)
   if (!items.length) return null
   return (
-    <SectionBand title="Achievements" icon={<Award size={20} />}>
+    <SectionBand id="section-achievements" title="Achievements" icon={<Award size={20} />}>
       <ListItems items={items} accent="bg-gold-400" />
     </SectionBand>
   )
@@ -234,7 +236,7 @@ function Gallery({ sections }: SectionsProps) {
   const images = getGalleryImages(sections.gallery)
   if (!images.length) return null
   return (
-    <SectionBand title="Gallery" icon={<BookOpen size={20} />} wide>
+    <SectionBand id="section-gallery" title="Gallery" icon={<BookOpen size={20} />} wide>
       <GalleryLightbox images={images} />
     </SectionBand>
   )
@@ -245,7 +247,7 @@ function Extras({ sections }: SectionsProps) {
   const hasExtras = hasItems(sections.languages?.spoken) || hasItems(sections.insurance?.panels) || socialLinks.length > 0
   if (!hasExtras) return null
   return (
-    <SectionBand title="More Information" icon={<Languages size={20} />} wide>
+    <SectionBand id="section-languages" title="More Information" icon={<Languages size={20} />} wide>
       <div className="grid gap-5 md:grid-cols-3">
         <PillGroup title="Languages" items={sections.languages?.spoken} />
         <PillGroup title="Insurance" items={sections.insurance?.panels} />

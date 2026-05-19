@@ -17,7 +17,7 @@ interface StatItem {
 
 export default function BoldStats({ sections }: StatsProps) {
   const stats: StatItem[] = [
-    { value: computeExperienceYears(sections.experience), label: 'Years of Experience' },
+    { value: computeExperienceYears(sections.experience, sections.personal), label: 'Years of Experience' },
     { value: getServiceCount(sections.services), label: 'Services Offered' },
     { value: getSpecializationCount(sections.specialization), label: 'Focus Areas' },
   ].filter((item) => item.value > 0)

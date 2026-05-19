@@ -1,11 +1,9 @@
-// Profile editor page — two-column layout with side nav and active form pane
+// Profile editor page — fetches doctor, sections, template and renders split-screen editor
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ExternalLink } from 'lucide-react'
-import { getProfileSections } from '@/app/actions/profile'
+import { getPreviewProfileData } from '@/app/actions/template'
 import { createServerClient } from '@/lib/supabase/server'
-import type { ProfileSection, SectionKey, SectionMeta } from '@/types/Profile'
+import type { SectionKey, SectionMeta } from '@/types/Profile'
 import ProfileEditor from '@/components/dashboard/profile/ProfileEditor'
 
 export const metadata: Metadata = { title: 'Edit Profile' }
@@ -16,46 +14,40 @@ export default async function ProfilePage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [sectionsResult, doctorResult] = await Promise.all([
-    getProfileSections(),
-    supabase.from('doctors').select('slug, plan').eq('id', user.id).single(),
+  const [previewResult, metaResult] = await Promise.all([
+    getPreviewProfileData(),
+    supabase
+      .from('profiles')
+      .select('section_key, is_visible, display_order')
+      .eq('doctor_id', user.id),
   ])
 
-  const sections: Partial<Record<SectionKey, unknown>> = {}
-  const sectionMeta: SectionMeta[] = []
-
-  if (sectionsResult.data) {
-    for (const row of sectionsResult.data as ProfileSection[]) {
-      sections[row.section_key] = row.data
-      sectionMeta.push({
-        section_key: row.section_key,
-        is_visible: row.is_visible,
-        display_order: row.display_order,
-      })
-    }
+  if (previewResult.error || !previewResult.data) {
+    return (
+      <div className="p-6">
+        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {previewResult.error ?? 'Failed to load profile.'}
+        </p>
+      </div>
+    )
   }
 
-  const slug = doctorResult.data?.slug as string | undefined
-  const plan = (doctorResult.data?.plan as string) ?? 'free'
+  const { doctor, sections, template } = previewResult.data
+
+  const sectionMeta: SectionMeta[] = (metaResult.data ?? []).map((row) => ({
+    section_key: row.section_key as SectionKey,
+    is_visible: row.is_visible,
+    display_order: row.display_order,
+  }))
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Edit Profile</h1>
-        {slug && (
-          <Link
-            href={`/dr/${slug}`}
-            target="_blank"
-            className="flex items-center gap-1.5 text-sm text-brand-600 hover:text-brand-700 font-medium"
-          >
-            Preview <ExternalLink className="w-4 h-4" />
-          </Link>
-        )}
-      </div>
+    <div className="h-[calc(100vh-4rem)] overflow-hidden">
       <ProfileEditor
         sections={sections}
         sectionMeta={sectionMeta}
-        doctorPlan={plan}
+        doctorPlan={doctor.plan}
+        doctor={doctor}
+        template={template}
       />
     </div>
   )

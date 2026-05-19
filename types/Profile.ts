@@ -25,6 +25,7 @@ export interface PersonalSection {
   cover_image?: string
   tagline?: string
   about?: string
+  years_of_experience?: number
 }
 
 export interface QualificationEntry {

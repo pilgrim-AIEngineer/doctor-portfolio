@@ -19,6 +19,7 @@ export default function BoldAppointmentCTA({ appointment, doctor, fees }: Appoin
 
   return (
     <>
+      <span id="section-appointment" aria-hidden="true" />
       {contact.formEnabled && (
         <section id="bold-book-form" className="md:hidden bg-navy px-6 pb-5">
           <BookingPanel doctor={doctor} contact={contact} fees={fees} compact />

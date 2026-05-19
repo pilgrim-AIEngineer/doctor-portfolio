@@ -15,6 +15,7 @@ export const personalSectionSchema = z.object({
   cover_image: z.string().url().optional().or(z.literal('')),
   tagline: z.string().max(120, 'Keep tagline under 120 characters').optional(),
   about: z.string().max(ABOUT_MAX_CHARS, `About must be under ${ABOUT_MAX_CHARS} characters`).optional(),
+  years_of_experience: z.number().int().min(0).max(80).optional(),
 })
 export type PersonalSectionInput = z.infer<typeof personalSectionSchema>
 

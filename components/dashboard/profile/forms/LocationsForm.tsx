@@ -1,9 +1,10 @@
 // LocationsForm — edits the "locations" profile section (Pro only)
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import type { LocationEntry } from '@/types/Profile'
 import { LOCATIONS_MAX, PHONE_PREFIX } from '@/lib/constants'
 import CardArrayInput from '../CardArrayInput'
@@ -113,7 +114,10 @@ export default function LocationsForm({ data }: { data: unknown }) {
     )
   }
 
+  const setSection = useDraftStore((s) => s.setSection)
   const status = useAutoSave({ locations }, (d) => saveProfileSection('locations', d))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('locations', { locations }) }, [JSON.stringify(locations)])
 
   return (
     <div className="space-y-5">

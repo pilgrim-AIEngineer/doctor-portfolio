@@ -1,9 +1,10 @@
 // QualificationsForm — edits the "qualifications" profile section
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import type { QualificationEntry } from '@/types/Profile'
 import CardArrayInput from '../CardArrayInput'
 import SaveStatus from '../SaveStatus'
@@ -73,6 +74,9 @@ export default function QualificationsForm({ data }: { data: unknown }) {
 
   const formData = { degrees, fellowships }
   const status = useAutoSave(formData, (d) => saveProfileSection('qualifications', d))
+  const setSection = useDraftStore((s) => s.setSection)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('qualifications', formData) }, [JSON.stringify(formData)])
 
   return (
     <div className="space-y-6">

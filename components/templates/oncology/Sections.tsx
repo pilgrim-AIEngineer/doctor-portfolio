@@ -86,7 +86,7 @@ function AnchorNav() {
 
 function TrustBand({ doctor, sections }: SectionsProps) {
   const { experience, languages, clinicInfo } = sections
-  const expYears = computeExperienceYears(experience)
+  const expYears = computeExperienceYears(experience, sections.personal)
   const items = [
     expYears > 0 ? { label: 'Experience', value: `${expYears}+ years`, icon: <Stethoscope size={18} /> } : null,
     experience?.current_affiliation ? { label: 'Affiliation', value: experience.current_affiliation, icon: <MapPin size={18} /> } : null,
@@ -129,6 +129,8 @@ function Treatments({ sections }: Pick<SectionsProps, 'sections'>) {
 
   return (
     <SectionCard id="oncology-treatments" title="Cancer Treatments" icon={<Stethoscope size={20} />} wide>
+      <span id="section-services" aria-hidden="true" />
+      <span id="section-specialization" aria-hidden="true" />
       <div className="grid gap-4 md:grid-cols-3">
         {groups.map((group) => (
           <div key={group.title} className="relative overflow-hidden rounded-3xl border border-oncology-teal/20 bg-gradient-to-br from-oncology-teal/10 to-white/[0.04] p-5 shadow-oncology">
@@ -146,6 +148,7 @@ function DoctorStory({ sections }: Pick<SectionsProps, 'sections'>) {
   if (!sections.personal?.about) return null
   return (
     <SectionCard id="oncology-about" title="Doctor Story" icon={<UserRound size={20} />} wide tone="light">
+      <span id="section-personal" aria-hidden="true" />
       <p className="max-w-4xl whitespace-pre-line text-lg leading-8 text-gray-700">
         {sections.personal.about}
       </p>
@@ -164,7 +167,8 @@ function Credentials({ sections }: Pick<SectionsProps, 'sections'>) {
   const fellowships = getQualificationItems(sections.qualifications?.fellowships ?? [])
 
   return (
-    <SectionCard title="Credentials" icon={<GraduationCap size={20} />}>
+    <SectionCard id="section-qualifications" title="Credentials" icon={<GraduationCap size={20} />}>
+      <span id="section-achievements" aria-hidden="true" />
       <div className="space-y-6">
         <TextList title="Degrees" items={degrees} />
         <TextList title="Fellowships" items={fellowships} />
@@ -192,6 +196,7 @@ function Clinic({ sections }: Pick<SectionsProps, 'sections'>) {
     const sorted = [...locationEntries].sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0))
     return (
       <SectionCard id="oncology-clinic" title="Clinic Access" icon={<MapPin size={20} />}>
+        <span id="section-clinic_info" aria-hidden="true" />
         <div className="space-y-4">
           {sorted.map((loc) => <LocationCard key={loc.name} loc={loc} />)}
         </div>
@@ -203,6 +208,7 @@ function Clinic({ sections }: Pick<SectionsProps, 'sections'>) {
 
   return (
     <SectionCard id="oncology-clinic" title="Clinic Access" icon={<MapPin size={20} />}>
+      <span id="section-clinic_info" aria-hidden="true" />
       <div className="space-y-3 text-gray-700">
         {data.address && <InfoRow icon={<MapPin size={18} />} text={data.address} />}
         {data.timings && <InfoRow icon={<Clock size={18} />} text={data.timings} />}
@@ -216,7 +222,7 @@ function Clinic({ sections }: Pick<SectionsProps, 'sections'>) {
 function Testimonials({ sections }: Pick<SectionsProps, 'sections'>) {
   if (!hasItems(sections.testimonials?.reviews)) return null
   return (
-    <SectionCard title="Patient Feedback" icon={<ShieldCheck size={20} />} wide>
+    <SectionCard id="section-testimonials" title="Patient Feedback" icon={<ShieldCheck size={20} />} wide>
       <TestimonialsCarousel reviews={sections.testimonials.reviews} />
     </SectionCard>
   )
@@ -226,7 +232,7 @@ function Research({ sections }: Pick<SectionsProps, 'sections'>) {
   const hasContent = hasItems(sections.research?.publications) || hasItems(sections.research?.conferences)
   if (!hasContent) return null
   return (
-    <SectionCard title="Research and Insights" icon={<BookOpen size={20} />} wide>
+    <SectionCard id="section-research" title="Research and Insights" icon={<BookOpen size={20} />} wide>
       <div className="grid gap-6 md:grid-cols-2">
         <TextList title="Publications" items={sections.research?.publications} />
         <TextList title="Conferences" items={sections.research?.conferences} />
@@ -239,7 +245,7 @@ function Gallery({ sections }: Pick<SectionsProps, 'sections'>) {
   const images = getGalleryImages(sections.gallery)
   if (!images.length) return null
   return (
-    <SectionCard title="Clinic Gallery" icon={<Images size={20} />} wide>
+    <SectionCard id="section-gallery" title="Clinic Gallery" icon={<Images size={20} />} wide>
       <GalleryLightbox images={images} />
     </SectionCard>
   )
@@ -251,7 +257,7 @@ function MoreInfo({ sections }: Pick<SectionsProps, 'sections'>) {
   if (!hasContent) return null
 
   return (
-    <SectionCard title="More Information" icon={<Languages size={20} />} wide>
+    <SectionCard id="section-languages" title="More Information" icon={<Languages size={20} />} wide>
       <div className="grid gap-5 md:grid-cols-3">
         <PillGroup title="Languages" items={sections.languages?.spoken} />
         <PillGroup title="Insurance" items={sections.insurance?.panels} />

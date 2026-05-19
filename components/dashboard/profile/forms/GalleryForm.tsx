@@ -1,10 +1,12 @@
 // GalleryForm — edits the "gallery" profile section
 'use client'
 
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import { gallerySectionSchema, type GallerySectionInput } from '@/lib/validations/profile'
 import SaveStatus from '../SaveStatus'
 import ImageUploader from '../ImageUploader'
@@ -18,7 +20,11 @@ export default function GalleryForm({ data }: { data: unknown }) {
     },
   })
   const { watch, setValue } = form
-  const status = useAutoSave(watch(), (d) => saveProfileSection('gallery', d))
+  const snapshot = watch()
+  const status = useAutoSave(snapshot, (d) => saveProfileSection('gallery', d))
+  const setSection = useDraftStore((s) => s.setSection)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('gallery', snapshot) }, [JSON.stringify(snapshot)])
 
   return (
     <div className="space-y-5">

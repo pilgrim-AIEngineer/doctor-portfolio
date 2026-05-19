@@ -1,9 +1,10 @@
 // AchievementsForm — edits the "achievements" profile section
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import TagChipInput from '../TagChipInput'
 import SaveStatus from '../SaveStatus'
 
@@ -16,6 +17,9 @@ export default function AchievementsForm({ data }: { data: unknown }) {
 
   const formData = { awards, recognitions }
   const status = useAutoSave(formData, (d) => saveProfileSection('achievements', d))
+  const setSection = useDraftStore((s) => s.setSection)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('achievements', formData) }, [JSON.stringify(formData)])
 
   return (
     <div className="space-y-5">

@@ -1,9 +1,10 @@
 // ServicesForm — edits the "services" profile section
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import TagChipInput from '../TagChipInput'
 import SaveStatus from '../SaveStatus'
 
@@ -17,6 +18,9 @@ export default function ServicesForm({ data }: { data: unknown }) {
 
   const formData = { treatments, procedures, consultation_types: consultationTypes }
   const status = useAutoSave(formData, (d) => saveProfileSection('services', d))
+  const setSection = useDraftStore((s) => s.setSection)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('services', formData) }, [JSON.stringify(formData)])
 
   return (
     <div className="space-y-5">

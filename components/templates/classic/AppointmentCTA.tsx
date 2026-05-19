@@ -17,6 +17,7 @@ export default function AppointmentCTA({ appointment, doctor, fees }: Appointmen
 
   return (
     <>
+      <span id="section-appointment" aria-hidden="true" />
       {contact.formEnabled && (
         <section id="classic-book-form" className="md:hidden px-6 pb-5">
           <BookingPanel doctor={doctor} contact={contact} fees={fees} compact />

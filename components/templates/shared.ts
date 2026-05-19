@@ -148,7 +148,8 @@ export function getPreviewMissingSections(sections: TemplateSections): string[] 
   return missing
 }
 
-export function computeExperienceYears(experience?: ExperienceSection): number {
+export function computeExperienceYears(experience?: ExperienceSection, personal?: PersonalSection): number {
+  if (personal?.years_of_experience != null) return personal.years_of_experience
   if (!experience?.hospitals?.length) return 0
   const minYear = Math.min(...experience.hospitals.map((h: HospitalEntry) => h.from_year))
   return Math.max(0, new Date().getFullYear() - minYear)

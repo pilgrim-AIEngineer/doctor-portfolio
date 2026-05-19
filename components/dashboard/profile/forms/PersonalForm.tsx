@@ -1,10 +1,12 @@
 // PersonalForm — edits the "personal" profile section
 'use client'
 
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import { personalSectionSchema, type PersonalSectionInput } from '@/lib/validations/profile'
 import { ABOUT_MAX_CHARS } from '@/lib/constants'
 import SaveStatus from '../SaveStatus'
@@ -24,11 +26,16 @@ export default function PersonalForm({ data }: { data: unknown }) {
       cover_image: existing?.cover_image ?? '',
       tagline: existing?.tagline ?? '',
       about: existing?.about ?? '',
+      years_of_experience: existing?.years_of_experience ?? undefined,
     },
   })
   const { register, watch, setValue, formState: { errors } } = form
   const about = watch('about') ?? ''
-  const status = useAutoSave(watch(), (d) => saveProfileSection('personal', d))
+  const snapshot = watch()
+  const status = useAutoSave(snapshot, (d) => saveProfileSection('personal', d))
+  const setSection = useDraftStore((s) => s.setSection)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('personal', snapshot) }, [JSON.stringify(snapshot)])
 
   return (
     <div className="space-y-5">
@@ -65,6 +72,19 @@ export default function PersonalForm({ data }: { data: unknown }) {
         <label className={LABEL}>Tagline <span className="text-gray-400 font-normal">(max 120 chars)</span></label>
         <input type="text" {...register('tagline')} className={INPUT} placeholder="e.g. 15+ years in cardiac surgery" />
         {errors.tagline && <p className={ERROR}>{errors.tagline.message}</p>}
+      </div>
+
+      <div>
+        <label className={LABEL}>Years of experience</label>
+        <input
+          type="number"
+          {...register('years_of_experience', { valueAsNumber: true })}
+          min={0}
+          max={80}
+          className={INPUT}
+          placeholder="e.g. 15"
+        />
+        {errors.years_of_experience && <p className={ERROR}>{errors.years_of_experience.message}</p>}
       </div>
 
       <div>

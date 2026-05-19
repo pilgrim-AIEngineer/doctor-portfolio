@@ -1,11 +1,16 @@
-// ProfileEditor — two-column shell: left nav + right form pane
+// ProfileEditor — split-screen shell: section nav + form (left) and live preview (right)
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { SectionKey, SectionMeta } from '@/types/Profile'
+import type { Doctor } from '@/types/Doctor'
+import type { Template } from '@/types/Template'
 import { PROFILE_GROUPS } from '@/lib/constants'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import ProfileSideNav from '@/components/dashboard/ProfileSideNav'
 import ProfileStrength from '@/components/dashboard/ProfileStrength'
+import ResizablePanels from './ResizablePanels'
+import ProfilePreviewPanel from './ProfilePreviewPanel'
 import PersonalForm from './forms/PersonalForm'
 import QualificationsForm from './forms/QualificationsForm'
 import RegistrationForm from './forms/RegistrationForm'
@@ -52,72 +57,106 @@ interface Props {
   sections: Partial<Record<SectionKey, unknown>>
   sectionMeta: SectionMeta[]
   doctorPlan: string
+  doctor: Doctor
+  template: Template
 }
 
-export default function ProfileEditor({ sections, sectionMeta, doctorPlan }: Props) {
+export default function ProfileEditor({ sections, sectionMeta, doctorPlan, doctor, template }: Props) {
   const [activeSection, setActiveSection] = useState<SectionKey>('personal')
   const [showProGate, setShowProGate] = useState(false)
   const ActiveForm = FORMS[activeSection]
+  const initSections = useDraftStore((s) => s.initSections)
+
+  useEffect(() => {
+    initSections(sections)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const formPane = (
+    <div className="flex-1 min-w-0">
+      {showProGate ? (
+        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Pro feature</h3>
+          <p className="text-sm text-gray-500 mb-4">Upgrade to Pro to unlock Fees, Locations, and FAQ sections.</p>
+          <a
+            href="/dashboard/billing"
+            className="inline-flex items-center px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition-colors"
+          >
+            Upgrade to Pro — ₹499/month
+          </a>
+          <button
+            onClick={() => setShowProGate(false)}
+            className="block mt-3 text-xs text-gray-400 hover:text-gray-600 mx-auto"
+          >
+            Go back
+          </button>
+        </div>
+      ) : (
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <ActiveForm data={sections[activeSection]} />
+        </div>
+      )}
+    </div>
+  )
+
+  const sideNav = (
+    <div className="w-56 flex-shrink-0">
+      <div className="sticky top-6 border border-gray-200 rounded-xl overflow-hidden bg-white">
+        <ProfileStrength sections={sections} />
+        <div className="p-2">
+          <ProfileSideNav
+            sections={sections}
+            sectionMeta={sectionMeta}
+            activeSection={activeSection}
+            doctorPlan={doctorPlan}
+            onSelect={setActiveSection}
+            onProGate={() => setShowProGate(true)}
+          />
+        </div>
+      </div>
+    </div>
+  )
 
   return (
     <>
-      {/* Mobile: group chips — tapping navigates to first section in group */}
-      <div className="md:hidden overflow-x-auto -mx-6 px-6 mb-4">
-        <div className="flex gap-2 min-w-max">
-          {PROFILE_GROUPS.map((group) => (
-            <button
-              key={group.key}
-              onClick={() => setActiveSection(group.sections[0] as SectionKey)}
-              className="px-3 py-1.5 text-xs font-medium rounded-full border border-gray-200 text-gray-600 hover:border-brand-300 hover:text-brand-700 whitespace-nowrap"
-            >
-              {group.label}
-            </button>
-          ))}
+      {/* Mobile: group chips + form */}
+      <div className="md:hidden">
+        <div className="overflow-x-auto -mx-6 px-6 mb-4">
+          <div className="flex gap-2 min-w-max">
+            {PROFILE_GROUPS.map((group) => (
+              <button
+                key={group.key}
+                onClick={() => setActiveSection(group.sections[0] as SectionKey)}
+                className="px-3 py-1.5 text-xs font-medium rounded-full border border-gray-200 text-gray-600 hover:border-brand-300 hover:text-brand-700 whitespace-nowrap"
+              >
+                {group.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex gap-6">
+          {sideNav}
+          {formPane}
         </div>
       </div>
 
-      {/* Desktop: two-column */}
-      <div className="flex gap-6">
-        <div className="hidden md:flex flex-col w-56 flex-shrink-0">
-          <div className="sticky top-6 border border-gray-200 rounded-xl overflow-hidden bg-white">
-            <ProfileStrength sections={sections} />
-            <div className="p-2">
-              <ProfileSideNav
-                sections={sections}
-                sectionMeta={sectionMeta}
-                activeSection={activeSection}
-                doctorPlan={doctorPlan}
-                onSelect={setActiveSection}
-                onProGate={() => setShowProGate(true)}
-              />
+      {/* Desktop: resizable split-screen */}
+      <div className="hidden md:block" style={{ height: 'calc(100vh - 4rem)' }}>
+        <ResizablePanels
+          left={
+            <div className="flex gap-6 p-6">
+              {sideNav}
+              {formPane}
             </div>
-          </div>
-        </div>
-
-        <div className="flex-1 min-w-0">
-          {showProGate ? (
-            <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Pro feature</h3>
-              <p className="text-sm text-gray-500 mb-4">Upgrade to Pro to unlock Fees, Locations, and FAQ sections.</p>
-              <a
-                href="/dashboard/billing"
-                className="inline-flex items-center px-4 py-2 bg-brand-600 text-white text-sm font-medium rounded-lg hover:bg-brand-700 transition-colors"
-              >
-                Upgrade to Pro — ₹499/month
-              </a>
-              <button
-                onClick={() => setShowProGate(false)}
-                className="block mt-3 text-xs text-gray-400 hover:text-gray-600 mx-auto"
-              >
-                Go back
-              </button>
-            </div>
-          ) : (
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <ActiveForm data={sections[activeSection]} />
-            </div>
-          )}
-        </div>
+          }
+          right={
+            <ProfilePreviewPanel
+              doctor={doctor}
+              template={template}
+              activeSection={activeSection}
+            />
+          }
+        />
       </div>
     </>
   )

@@ -1,9 +1,10 @@
 // ResearchForm — edits the "research" profile section
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import TagChipInput from '../TagChipInput'
 import SaveStatus from '../SaveStatus'
 
@@ -16,6 +17,9 @@ export default function ResearchForm({ data }: { data: unknown }) {
 
   const formData = { publications, conferences }
   const status = useAutoSave(formData, (d) => saveProfileSection('research', d))
+  const setSection = useDraftStore((s) => s.setSection)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('research', formData) }, [JSON.stringify(formData)])
 
   return (
     <div className="space-y-5">

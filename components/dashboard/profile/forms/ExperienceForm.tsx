@@ -1,9 +1,10 @@
 // ExperienceForm — edits the "experience" profile section
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import type { HospitalEntry } from '@/types/Profile'
 import CardArrayInput from '../CardArrayInput'
 import SaveStatus from '../SaveStatus'
@@ -100,6 +101,9 @@ export default function ExperienceForm({ data }: { data: unknown }) {
 
   const formData = { hospitals, current_affiliation: currentAffiliation }
   const status = useAutoSave(formData, (d) => saveProfileSection('experience', d))
+  const setSection = useDraftStore((s) => s.setSection)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('experience', formData) }, [JSON.stringify(formData)])
 
   return (
     <div className="space-y-5">

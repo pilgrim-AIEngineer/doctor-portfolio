@@ -1,11 +1,12 @@
 // SpecializationForm — edits the "specialization" profile section
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { saveProfileSection } from '@/app/actions/profile'
 import { useAutoSave } from '@/hooks/useAutoSave'
+import { useDraftStore } from '@/hooks/useDraftStore'
 import { specializationSectionSchema } from '@/lib/validations/profile'
 import TagChipInput from '../TagChipInput'
 import SaveStatus from '../SaveStatus'
@@ -24,6 +25,9 @@ export default function SpecializationForm({ data }: { data: unknown }) {
   const primary = watch('primary')
   const formData = { primary, sub_specialties: subSpecialties }
   const status = useAutoSave(formData, (d) => saveProfileSection('specialization', d))
+  const setSection = useDraftStore((s) => s.setSection)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { setSection('specialization', formData) }, [JSON.stringify(formData)])
 
   return (
     <div className="space-y-5">

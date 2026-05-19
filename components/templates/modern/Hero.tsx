@@ -20,7 +20,7 @@ export default function ModernHero({ doctor, sections }: HeroProps) {
   const contact = getContactLinks(appointment, doctor)
 
   return (
-    <section className="relative overflow-hidden">
+    <section id="section-personal" className="relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,theme(colors.brand.700),transparent_34%),radial-gradient(circle_at_80%_10%,theme(colors.modern.cyan),transparent_24%)] opacity-50" />
       <div className="relative mx-auto grid max-w-7xl gap-8 px-6 py-10 md:grid-cols-[0.95fr_1.05fr] md:py-16">
         <div className="flex flex-col justify-center animate-template-rise">
@@ -82,7 +82,7 @@ export default function ModernHero({ doctor, sections }: HeroProps) {
               </div>
             </div>
             <div className="grid gap-4">
-              <Metric value={computeExperienceYears(experience)} label="years" />
+              <Metric value={computeExperienceYears(experience, personal)} label="years" />
               <Metric value={getServiceCount(services)} label="services" />
               <Metric value={getSpecializationCount(specialization)} label="focus areas" />
               <div className="relative overflow-hidden rounded-[1.5rem] border border-cyan-300/20 bg-cyan-300/10 p-5">
