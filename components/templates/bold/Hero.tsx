@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { CalendarDays, Phone, ShieldCheck } from 'lucide-react'
 import type { Doctor } from '@/types/Doctor'
-import { getContactLinks, type TemplateSections } from '@/components/templates/shared'
+import { getContactLinks, getInitials, type TemplateSections } from '@/components/templates/shared'
 
 interface HeroProps {
   doctor: Doctor
@@ -32,8 +32,10 @@ export default function BoldHero({ doctor, sections }: HeroProps) {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center font-serif text-7xl text-gold-300/30">
-                  Dr
+                <div className="flex h-full items-center justify-center">
+                  <div className="flex h-28 w-28 items-center justify-center rounded-full border border-gold-300/40 bg-gold-300/10 font-serif text-4xl font-bold text-gold-300">
+                    {getInitials(doctor.name)}
+                  </div>
                 </div>
               )}
             </div>
@@ -41,13 +43,22 @@ export default function BoldHero({ doctor, sections }: HeroProps) {
         </div>
 
         <div className="order-1 flex flex-col justify-center animate-template-rise [animation-delay:140ms] md:order-2">
-          {doctor.is_verified && (
-            <span className="mb-7 inline-flex w-fit items-center gap-2 border-y border-gold-300/40 py-2 text-sm font-semibold text-gold-300">
-              <ShieldCheck size={16} />
-              NMC Verified
+          <div className="mb-7 flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center gap-2 border-y border-gold-300/40 py-2 text-sm font-semibold text-gold-300">
+              {doctor.specialty}
             </span>
-          )}
-          <h1 className="font-serif text-5xl font-bold leading-none tracking-tight text-white md:text-7xl">
+            {doctor.is_verified ? (
+              <span className="inline-flex items-center gap-2 border-y border-gold-300/40 py-2 text-sm font-semibold text-gold-300">
+                <ShieldCheck size={16} />
+                NMC Verified
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2 border-y border-gold-300/20 py-2 text-sm font-medium text-gray-400">
+                NMC: {doctor.nmc_number}
+              </span>
+            )}
+          </div>
+          <h1 className="font-serif text-3xl font-bold leading-none tracking-tight text-white sm:text-5xl md:text-7xl">
             Dr. {doctor.name}
           </h1>
           <p className="mt-5 text-lg font-semibold uppercase tracking-[0.28em] text-gold-300">
