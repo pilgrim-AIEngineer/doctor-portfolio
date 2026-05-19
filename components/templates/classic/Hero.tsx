@@ -1,8 +1,8 @@
 // Classic template hero - editorial profile opening with contact summary
 import Image from 'next/image'
-import { CalendarDays, MapPin, Phone, ShieldCheck } from 'lucide-react'
+import { CalendarDays, MapPin, Phone, ShieldCheck, Stethoscope } from 'lucide-react'
 import type { Doctor } from '@/types/Doctor'
-import { computeExperienceYears, getContactLinks, type TemplateSections } from '@/components/templates/shared'
+import { computeExperienceYears, getContactLinks, getInitials, type TemplateSections } from '@/components/templates/shared'
 
 interface HeroProps {
   doctor: Doctor
@@ -19,10 +19,18 @@ export default function ClassicHero({ doctor, sections }: HeroProps) {
       <div className="relative mx-auto grid max-w-6xl gap-10 px-6 pb-14 pt-10 md:grid-cols-[1.1fr_0.9fr] md:pb-20 md:pt-16">
         <div className="animate-template-rise">
           <div className="mb-8 flex flex-wrap items-center gap-3 text-sm text-gray-600">
-            {doctor.is_verified && (
+            <span className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 font-semibold text-brand-700">
+              <Stethoscope size={15} />
+              {doctor.specialty}
+            </span>
+            {doctor.is_verified ? (
               <span className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-3 py-1 font-semibold text-green-700">
                 <ShieldCheck size={15} />
                 NMC Verified
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-3 py-1 font-medium text-gray-600">
+                NMC: {doctor.nmc_number}
               </span>
             )}
             {clinicInfo?.address && (
@@ -77,8 +85,10 @@ export default function ClassicHero({ doctor, sections }: HeroProps) {
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full items-center justify-center text-6xl font-semibold text-brand-200">
-                  Dr
+                <div className="flex h-full items-center justify-center bg-brand-50">
+                  <div className="flex h-28 w-28 items-center justify-center rounded-full bg-brand-600 text-4xl font-bold text-white">
+                    {getInitials(doctor.name)}
+                  </div>
                 </div>
               )}
             </div>
