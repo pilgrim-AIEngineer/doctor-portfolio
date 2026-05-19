@@ -56,7 +56,6 @@ const fetchPortfolioData = cache(async (slug: string): Promise<PortfolioData> =>
       .from('profiles')
       .select('section_key, data, is_visible, display_order')
       .eq('doctor_id', doctor.id)
-      .eq('is_visible', true)
       .order('display_order', { ascending: true }),
     supabase
       .from('doctor_templates')
@@ -65,17 +64,21 @@ const fetchPortfolioData = cache(async (slug: string): Promise<PortfolioData> =>
       .maybeSingle(),
   ])
 
+  const allRows = sectionsRes.data ?? []
+
   const sections: Partial<Record<SectionKey, unknown>> = {}
-  for (const row of sectionsRes.data ?? []) {
-    sections[row.section_key as SectionKey] = row.data
+  for (const row of allRows) {
+    if (row.is_visible) {
+      sections[row.section_key as SectionKey] = row.data
+    }
   }
+
+  // Resolve display name from personal section regardless of its visibility setting
+  const personalRow = allRows.find((r) => r.section_key === 'personal')
+  const displayName = (personalRow?.data as { name?: string } | undefined)?.name?.trim() || doctor.name
 
   const rawTemplate = templateRes.data?.templates as unknown as Template | undefined
   const template: Template = rawTemplate ?? DEFAULT_TEMPLATE
-
-  // Prefer the name the doctor set in their dashboard personal section over the registration name
-  const personal = sections.personal as { name?: string } | undefined
-  const displayName = personal?.name?.trim() || doctor.name
 
   return { doctor: { ...doctor, name: displayName } as Doctor, sections, template }
 })

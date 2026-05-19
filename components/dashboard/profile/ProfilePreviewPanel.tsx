@@ -32,7 +32,9 @@ export default function ProfilePreviewPanel({ doctor, template, activeSection }:
   const containerRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
 
-  const profile: DoctorProfile = { doctor, sections, template }
+  const personal = sections.personal as { name?: string } | undefined
+  const displayName = personal?.name?.trim() || doctor.name
+  const profile: DoctorProfile = { doctor: { ...doctor, name: displayName }, sections, template }
 
   useEffect(() => {
     const el = containerRef.current

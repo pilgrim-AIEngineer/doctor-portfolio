@@ -46,7 +46,7 @@ export default function OnboardingStep() {
         <input
           {...register('name')}
           type="text"
-          placeholder="Dr. Rajesh Sharma"
+          placeholder="Rajesh Sharma (only name, no titles)"
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent"
         />
         {errors.name && (

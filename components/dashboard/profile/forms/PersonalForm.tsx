@@ -60,15 +60,6 @@ export default function PersonalForm({ data }: { data: unknown }) {
       </div>
 
       <div>
-        <label className={LABEL}>Cover image <span className="text-gray-400 font-normal">(banner for Bold &amp; Oncology templates)</span></label>
-        <ProfilePhotoUpload
-          value={watch('cover_image') ?? ''}
-          onChange={(url) => setValue('cover_image', url, { shouldDirty: true })}
-        />
-        {errors.cover_image && <p className={ERROR}>{errors.cover_image.message}</p>}
-      </div>
-
-      <div>
         <label className={LABEL}>Tagline <span className="text-gray-400 font-normal">(max 120 chars)</span></label>
         <input type="text" {...register('tagline')} className={INPUT} placeholder="e.g. 15+ years in cardiac surgery" />
         {errors.tagline && <p className={ERROR}>{errors.tagline.message}</p>}
