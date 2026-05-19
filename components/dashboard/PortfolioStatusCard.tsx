@@ -16,9 +16,13 @@ export default function PortfolioStatusCard({ isPublished, portfolioUrl, slug }:
   const [copied, setCopied] = useState(false)
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(portfolioUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(portfolioUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // clipboard API unavailable or denied — silent fail is acceptable here
+    }
   }
 
   return (
@@ -55,7 +59,7 @@ export default function PortfolioStatusCard({ isPublished, portfolioUrl, slug }:
               )}
               {copied ? 'Copied!' : 'Copy link'}
             </button>
-            <a
+            <Link
               href={`/dr/${slug}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -63,7 +67,7 @@ export default function PortfolioStatusCard({ isPublished, portfolioUrl, slug }:
             >
               View portfolio
               <ExternalLink size={15} />
-            </a>
+            </Link>
           </div>
 
           {!isPublished && (
