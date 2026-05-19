@@ -1,7 +1,7 @@
 // Portfolio status card — shows live URL, copy button, QR code, and publish status
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import QRCode from 'react-qr-code'
 import { Copy, Check, ExternalLink } from 'lucide-react'
@@ -14,16 +14,22 @@ interface Props {
 
 export default function PortfolioStatusCard({ isPublished, portfolioUrl, slug }: Props) {
   const [copied, setCopied] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(portfolioUrl)
+      if (timerRef.current) clearTimeout(timerRef.current)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      timerRef.current = setTimeout(() => setCopied(false), 2000)
     } catch {
       // clipboard API unavailable or denied — silent fail is acceptable here
     }
   }
+
+  useEffect(() => () => {
+    if (timerRef.current) clearTimeout(timerRef.current)
+  }, [])
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-6">
