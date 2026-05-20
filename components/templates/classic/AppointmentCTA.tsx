@@ -24,13 +24,13 @@ export default function AppointmentCTA({ appointment, doctor, fees }: Appointmen
         </section>
       )}
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-clinical-line bg-white/95 px-4 py-3 shadow-clinical backdrop-blur md:hidden">
-        <div className="flex gap-2">
+      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-100 bg-white/98 px-4 pb-[calc(env(safe-area-inset-bottom,0px)+12px)] pt-3 shadow-[0_-4px_24px_rgba(0,0,0,0.07)] backdrop-blur-sm md:hidden">
+        <div className="flex gap-2.5">
           <a
             href={contact.waUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-green-500 py-3 text-sm font-semibold text-white"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 py-3.5 text-sm font-bold text-white"
           >
             <Phone size={16} />
             WhatsApp
@@ -38,7 +38,7 @@ export default function AppointmentCTA({ appointment, doctor, fees }: Appointmen
           {contact.formEnabled && (
             <a
               href="#classic-book-form"
-              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-brand-700 py-3 text-sm font-semibold text-white"
+              className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-700 py-3.5 text-sm font-bold text-white"
             >
               <CalendarDays size={16} />
               Book
@@ -66,10 +66,10 @@ function BookingPanel({
   compact?: boolean
 }) {
   return (
-    <div className="mx-auto max-w-6xl rounded-[2rem] border border-clinical-line bg-clinical-mist p-6 shadow-clinical md:grid md:grid-cols-[0.8fr_1fr] md:gap-8 md:p-8">
+    <div className="mx-auto max-w-6xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm md:grid md:grid-cols-[0.8fr_1fr] md:gap-8 md:p-8">
       <div>
-        <p className="text-sm font-semibold uppercase text-brand-700">Appointment</p>
-        <h2 className="mt-2 text-3xl font-semibold tracking-tight text-clinical-ink">
+        <p className="text-xs font-bold uppercase tracking-widest text-brand-600">Appointment</p>
+        <h2 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">
           Book an appointment with Dr. {doctor.name}
         </h2>
         <p className="mt-3 text-gray-600">
