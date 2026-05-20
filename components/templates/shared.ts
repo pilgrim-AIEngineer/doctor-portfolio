@@ -172,3 +172,18 @@ export function getInitials(name: string): string {
   if (parts.length === 1) return parts[0][0].toUpperCase()
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
 }
+
+export function getVisibleSectionIds(sections: TemplateSections): string[] {
+  const checks: [string, boolean][] = [
+    ['section-personal',      !!sections.personal?.about],
+    ['section-qualifications', !!(sections.qualifications?.degrees?.length || sections.qualifications?.fellowships?.length)],
+    ['section-specialization', !!sections.specialization],
+    ['section-experience',    !!sections.experience],
+    ['section-services',      !!(sections.services?.treatments?.length || sections.services?.procedures?.length)],
+    ['section-clinic_info',   !!(sections.locations?.locations?.length || sections.clinicInfo)],
+    ['section-achievements',  !!(sections.achievements?.awards?.length || sections.achievements?.recognitions?.length)],
+    ['section-gallery',       !!sections.gallery?.images?.length],
+    ['section-languages',     !!(sections.languages?.spoken?.length || sections.insurance?.panels?.length || getSocialLinks(sections.social).length)],
+  ]
+  return checks.filter(([, hasContent]) => hasContent).map(([id]) => id)
+}
