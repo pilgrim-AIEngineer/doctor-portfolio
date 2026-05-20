@@ -1,0 +1,110 @@
+<h2>How should patients navigate sections on mobile?</h2>
+<p class="subtitle">There can be 8–10 sections below the hero. On a phone, that's a lot of scrolling.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="just-scroll" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f7fbff;padding:12px;font-family:system-ui;display:flex;justify-content:center">
+      <div style="width:200px;background:white;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);overflow:hidden;border:1px solid #e2e8f0">
+        <div style="background:#f8fafc;padding:6px 12px;display:flex;justify-content:space-between;font-size:8px;color:#94a3b8"><span>9:41</span><span>●●●●</span></div>
+        <!-- Photo hero (collapsed) -->
+        <div style="width:100%;height:50px;background:linear-gradient(160deg,#dbeafe,#93c5fd);display:flex;align-items:center;justify-content:center">
+          <div style="font-size:8px;color:#1e40af;font-weight:700;opacity:0.7">↑ hero above ↑</div>
+        </div>
+        <!-- Sections just stacking -->
+        <div style="padding:8px">
+          <div style="background:white;border-radius:10px;border:1px solid #dbeafe;padding:8px;margin-bottom:6px;box-shadow:0 2px 8px rgba(37,99,235,0.06)">
+            <div style="display:flex;align-items:center;gap-4px;margin-bottom:4px"><span style="background:#eff6ff;border-radius:6px;padding:3px;margin-right:4px;font-size:9px">❤</span><span style="font-size:10px;font-weight:700;color:#12233f">About</span></div>
+            <div style="font-size:8px;color:#6b7280;line-height:1.5">15 years of cardiac care, specialising in preventive cardiology and complex interventions...</div>
+          </div>
+          <div style="background:white;border-radius:10px;border:1px solid #dbeafe;padding:8px;margin-bottom:6px;box-shadow:0 2px 8px rgba(37,99,235,0.06)">
+            <div style="display:flex;align-items:center;gap-4px;margin-bottom:4px"><span style="background:#eff6ff;border-radius:6px;padding:3px;margin-right:4px;font-size:9px">🎓</span><span style="font-size:10px;font-weight:700;color:#12233f">Qualifications</span></div>
+            <div style="font-size:8px;color:#6b7280">MBBS · MD · DM Cardiology</div>
+          </div>
+          <div style="text-align:center;font-size:8px;color:#94a3b8;padding:4px">scroll for more ↓</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Just scroll (elevated cards)</h3>
+      <p>No navigation. Elevate the section cards themselves — better shadows, spacing, icon treatment. Clean and minimal. Patients scroll naturally.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="sticky-nav" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f7fbff;padding:12px;font-family:system-ui;display:flex;justify-content:center">
+      <div style="width:200px;background:white;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);overflow:hidden;border:1px solid #e2e8f0">
+        <div style="background:#f8fafc;padding:6px 12px;display:flex;justify-content:space-between;font-size:8px;color:#94a3b8"><span>9:41</span><span>●●●●</span></div>
+        <!-- Photo hero (collapsed) -->
+        <div style="width:100%;height:40px;background:linear-gradient(160deg,#dbeafe,#93c5fd);display:flex;align-items:center;justify-content:center">
+          <div style="font-size:8px;color:#1e40af;font-weight:700;opacity:0.7">↑ hero above ↑</div>
+        </div>
+        <!-- Sticky nav strip -->
+        <div style="background:white;border-bottom:1px solid #e2e8f0;padding:6px 8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,0.06)">
+          <div style="display:flex;gap:4px;white-space:nowrap">
+            <span style="background:#1d4ed8;color:white;border-radius:6px;padding:3px 8px;font-size:8px;font-weight:700;white-space:nowrap">About</span>
+            <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:3px 8px;font-size:8px;font-weight:600;white-space:nowrap">Qualifications</span>
+            <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:3px 8px;font-size:8px;font-weight:600;white-space:nowrap">Services</span>
+            <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:3px 8px;font-size:8px;font-weight:600;white-space:nowrap">Clinic</span>
+            <span style="color:#94a3b8;font-size:9px;padding:3px">›</span>
+          </div>
+        </div>
+        <!-- Active section -->
+        <div style="padding:8px">
+          <div style="background:white;border-radius:10px;border:1px solid #dbeafe;padding:8px;margin-bottom:6px;box-shadow:0 2px 8px rgba(37,99,235,0.06)">
+            <div style="display:flex;align-items:center;margin-bottom:4px"><span style="background:#eff6ff;border-radius:6px;padding:3px;margin-right:4px;font-size:9px">❤</span><span style="font-size:10px;font-weight:700;color:#12233f">About</span></div>
+            <div style="font-size:8px;color:#6b7280;line-height:1.5">15 years of cardiac care, specialising in preventive cardiology...</div>
+          </div>
+          <div style="background:white;border-radius:10px;border:1px solid #dbeafe;padding:8px;box-shadow:0 2px 8px rgba(37,99,235,0.06)">
+            <div style="display:flex;align-items:center;margin-bottom:4px"><span style="background:#eff6ff;border-radius:6px;padding:3px;margin-right:4px;font-size:9px">🎓</span><span style="font-size:10px;font-weight:700;color:#12233f">Qualifications</span></div>
+            <div style="font-size:8px;color:#6b7280">MBBS · MD · DM Cardiology</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Sticky section nav (horizontal scroll)</h3>
+      <p>A strip of section chips below the hero that sticks when you scroll. Tapping a chip jumps to that section. Much better for long profiles on phone.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="accordion" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f7fbff;padding:12px;font-family:system-ui;display:flex;justify-content:center">
+      <div style="width:200px;background:white;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,0.12);overflow:hidden;border:1px solid #e2e8f0">
+        <div style="background:#f8fafc;padding:6px 12px;display:flex;justify-content:space-between;font-size:8px;color:#94a3b8"><span>9:41</span><span>●●●●</span></div>
+        <div style="width:100%;height:40px;background:linear-gradient(160deg,#dbeafe,#93c5fd);display:flex;align-items:center;justify-content:center">
+          <div style="font-size:8px;color:#1e40af;font-weight:700;opacity:0.7">↑ hero above ↑</div>
+        </div>
+        <!-- Accordion sections -->
+        <div style="padding:8px">
+          <!-- Open section -->
+          <div style="background:white;border-radius:10px;border:1px solid #dbeafe;margin-bottom:4px;overflow:hidden;box-shadow:0 2px 8px rgba(37,99,235,0.06)">
+            <div style="padding:8px;display:flex;align-items:center;justify-content:space-between">
+              <div style="display:flex;align-items:center;gap:4px"><span style="background:#eff6ff;border-radius:6px;padding:3px;font-size:9px">❤</span><span style="font-size:10px;font-weight:700;color:#12233f;margin-left:4px">About</span></div>
+              <span style="color:#1d4ed8;font-size:12px;font-weight:700">−</span>
+            </div>
+            <div style="padding:0 8px 8px;font-size:8px;color:#6b7280;line-height:1.5">15 years of cardiac care, specialising in preventive cardiology and complex interventions...</div>
+          </div>
+          <!-- Collapsed sections -->
+          <div style="background:white;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:4px;padding:8px;display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:4px"><span style="background:#f1f5f9;border-radius:6px;padding:3px;font-size:9px">🎓</span><span style="font-size:10px;font-weight:600;color:#64748b;margin-left:4px">Qualifications</span></div>
+            <span style="color:#94a3b8;font-size:12px">+</span>
+          </div>
+          <div style="background:white;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:4px;padding:8px;display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:4px"><span style="background:#f1f5f9;border-radius:6px;padding:3px;font-size:9px">🏥</span><span style="font-size:10px;font-weight:600;color:#64748b;margin-left:4px">Services</span></div>
+            <span style="color:#94a3b8;font-size:12px">+</span>
+          </div>
+          <div style="background:white;border-radius:10px;border:1px solid #e2e8f0;padding:8px;display:flex;align-items:center;justify-content:space-between">
+            <div style="display:flex;align-items:center;gap:4px"><span style="background:#f1f5f9;border-radius:6px;padding:3px;font-size:9px">📍</span><span style="font-size:10px;font-weight:600;color:#64748b;margin-left:4px">Clinic</span></div>
+            <span style="color:#94a3b8;font-size:12px">+</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Accordion sections</h3>
+      <p>Sections are collapsed by default, expand on tap. Compact overview first, then detail on demand. Works well for very dense profiles.</p>
+    </div>
+  </div>
+
+</div>

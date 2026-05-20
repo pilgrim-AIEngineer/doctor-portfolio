@@ -1,0 +1,147 @@
+<h2>Design: Hero — mobile vs desktop</h2>
+<p class="subtitle">Left = mobile (new photo-hero). Right = desktop (refined 2-col, largely unchanged structure).</p>
+
+<div class="split">
+
+  <!-- Mobile -->
+  <div class="mockup">
+    <div class="mockup-header">Mobile — 375px</div>
+    <div class="mockup-body" style="display:flex;justify-content:center;background:#f0f6ff;padding:16px">
+      <div style="width:220px;background:white;border-radius:24px;box-shadow:0 8px 40px rgba(0,0,0,0.12);overflow:hidden;font-family:system-ui">
+        <!-- Status bar -->
+        <div style="background:#f8fafc;padding:6px 14px;display:flex;justify-content:space-between;font-size:8px;color:#94a3b8"><span>9:41</span><span>●●● 5G</span></div>
+
+        <!-- PHOTO BANNER -->
+        <div style="position:relative;width:100%;height:160px;background:linear-gradient(160deg,#93c5fd 0%,#dbeafe 50%,#bfdbfe 100%);display:flex;align-items:center;justify-content:center;overflow:hidden">
+          <!-- Photo placeholder -->
+          <div style="width:88px;height:88px;border-radius:50%;border:3px solid white;background:linear-gradient(140deg,#2563eb,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:24px;box-shadow:0 6px 20px rgba(29,78,216,0.35)">RK</div>
+          <!-- Gradient fade at bottom -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:48px;background:linear-gradient(to top,rgba(255,255,255,0.95),transparent)"></div>
+          <!-- NMC badge -->
+          <div style="position:absolute;bottom:10px;right:10px;background:white;border-radius:8px;padding:3px 8px;font-size:8px;font-weight:700;color:#15803d;box-shadow:0 2px 10px rgba(0,0,0,0.12);display:flex;align-items:center;gap:3px">
+            <span style="color:#16a34a">✓</span> NMC Verified
+          </div>
+        </div>
+
+        <!-- IDENTITY BLOCK -->
+        <div style="padding:12px 14px 0">
+          <!-- Specialty chip -->
+          <div style="margin-bottom:6px">
+            <span style="background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:6px;padding:2px 8px;font-size:8px;font-weight:700">Cardiologist</span>
+          </div>
+          <!-- Name -->
+          <div style="font-size:20px;font-weight:800;color:#0f172a;letter-spacing:-0.5px;line-height:1.15;margin-bottom:3px">Dr. Rajesh Kumar</div>
+          <!-- Affiliation -->
+          <div style="font-size:9px;color:#2563eb;font-weight:600;margin-bottom:8px">Senior Cardiologist · AIIMS Delhi</div>
+          <!-- Stats row -->
+          <div style="display:flex;gap:5px;margin-bottom:8px">
+            <div style="flex:1;background:#f8faff;border:1px solid #e2e8f0;border-radius:8px;padding:5px;text-align:center">
+              <div style="font-size:13px;font-weight:800;color:#1d4ed8">15</div>
+              <div style="font-size:7px;color:#6b7280;font-weight:600;text-transform:uppercase">Yrs Exp</div>
+            </div>
+            <div style="flex:1;background:#f8faff;border:1px solid #e2e8f0;border-radius:8px;padding:5px;text-align:center">
+              <div style="font-size:13px;font-weight:800;color:#1d4ed8">5k+</div>
+              <div style="font-size:7px;color:#6b7280;font-weight:600;text-transform:uppercase">Patients</div>
+            </div>
+            <div style="flex:1;background:#f8faff;border:1px solid #e2e8f0;border-radius:8px;padding:5px;text-align:center">
+              <div style="font-size:13px;font-weight:800;color:#1d4ed8">₹800</div>
+              <div style="font-size:7px;color:#6b7280;font-weight:600;text-transform:uppercase">Consult</div>
+            </div>
+          </div>
+          <!-- Tagline -->
+          <div style="border-left:3px solid #3b82f6;padding-left:8px;font-size:8.5px;color:#475569;line-height:1.5;font-style:italic;margin-bottom:10px">"15 years helping patients reclaim a healthy heart."</div>
+          <!-- CTAs -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px">
+            <div style="background:#16a34a;border-radius:10px;padding:9px;text-align:center;color:white;font-size:9px;font-weight:700">📱 WhatsApp</div>
+            <div style="background:#1d4ed8;border-radius:10px;padding:9px;text-align:center;color:white;font-size:9px;font-weight:700">📅 Book Now</div>
+          </div>
+        </div>
+
+        <!-- SECTION NAV PREVIEW -->
+        <div style="background:white;border-top:1px solid #e2e8f0;padding:8px 10px;overflow:hidden">
+          <div style="display:flex;gap:5px;white-space:nowrap">
+            <span style="background:#1d4ed8;color:white;border-radius:6px;padding:3px 9px;font-size:8px;font-weight:700">About</span>
+            <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:3px 9px;font-size:8px;font-weight:600">Quals</span>
+            <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:3px 9px;font-size:8px;font-weight:600">Services</span>
+            <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:3px 9px;font-size:8px;font-weight:600">Clinic</span>
+            <span style="color:#94a3b8;padding:3px 2px;font-size:9px">›</span>
+          </div>
+        </div>
+
+        <!-- SECTION CARD PREVIEW -->
+        <div style="padding:8px 10px;background:#f8faff">
+          <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+            <div style="padding:8px 10px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:6px">
+              <div style="width:22px;height:22px;border-radius:6px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:10px">❤️</div>
+              <span style="font-size:10px;font-weight:700;color:#0f172a">About</span>
+            </div>
+            <div style="padding:8px 10px;font-size:8px;color:#475569;line-height:1.6">15 years of cardiac care, specialising in preventive cardiology and complex interventional procedures...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Desktop -->
+  <div class="mockup">
+    <div class="mockup-header">Desktop — 1280px</div>
+    <div class="mockup-body" style="background:#f7fbff;padding:16px;font-family:system-ui">
+
+      <!-- Desktop Hero -->
+      <div style="background:white;border-radius:16px;padding:20px;box-shadow:0 2px 16px rgba(37,99,235,0.06);border:1px solid #e2e8f0;max-width:100%">
+        <div style="display:grid;grid-template-columns:1.2fr 0.8fr;gap:20px;align-items:start">
+          <!-- Left: text -->
+          <div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+              <span style="background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700">Cardiologist</span>
+              <span style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;border-radius:99px;padding:3px 10px;font-size:9px;font-weight:700">✓ NMC Verified</span>
+            </div>
+            <div style="font-size:26px;font-weight:800;color:#0f172a;letter-spacing:-0.8px;line-height:1.1;margin-bottom:4px">Dr. Rajesh Kumar</div>
+            <div style="font-size:11px;font-weight:600;color:#2563eb;margin-bottom:8px">Senior Cardiologist · AIIMS New Delhi</div>
+            <div style="border-left:3px solid #3b82f6;padding-left:10px;font-size:10px;color:#475569;line-height:1.6;font-style:italic;margin-bottom:14px">"15 years helping patients reclaim a healthy heart through evidence-based care."</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <div style="background:#16a34a;border-radius:10px;padding:7px 14px;color:white;font-size:9px;font-weight:700">WhatsApp</div>
+              <div style="background:#1d4ed8;border-radius:10px;padding:7px 14px;color:white;font-size:9px;font-weight:700">Book Appointment</div>
+            </div>
+          </div>
+          <!-- Right: photo card -->
+          <div style="background:#f8faff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden">
+            <div style="width:100%;height:100px;background:linear-gradient(160deg,#93c5fd,#dbeafe);display:flex;align-items:center;justify-content:center;position:relative">
+              <div style="width:56px;height:56px;border-radius:50%;border:3px solid white;background:linear-gradient(140deg,#2563eb,#1d4ed8);display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:15px;box-shadow:0 4px 12px rgba(29,78,216,0.3)">RK</div>
+            </div>
+            <div style="padding:8px 10px">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                <div style="background:#eff6ff;border-radius:8px;padding:7px;text-align:center"><div style="font-size:14px;font-weight:800;color:#1d4ed8">15</div><div style="font-size:7px;color:#6b7280;font-weight:600;text-transform:uppercase">Yrs Exp</div></div>
+                <div style="background:#eff6ff;border-radius:8px;padding:7px;text-align:center"><div style="font-size:14px;font-weight:800;color:#1d4ed8">₹800</div><div style="font-size:7px;color:#6b7280;font-weight:600;text-transform:uppercase">Consult</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Nav on desktop -->
+      <div style="background:white;border-bottom:1px solid #e2e8f0;padding:8px 12px;margin-top:12px;border-radius:8px;border:1px solid #e2e8f0;display:flex;gap:6px">
+        <span style="background:#1d4ed8;color:white;border-radius:6px;padding:4px 12px;font-size:9px;font-weight:700">About</span>
+        <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:4px 12px;font-size:9px;font-weight:600">Qualifications</span>
+        <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:4px 12px;font-size:9px;font-weight:600">Services</span>
+        <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:4px 12px;font-size:9px;font-weight:600">Clinic</span>
+        <span style="background:#f1f5f9;color:#64748b;border-radius:6px;padding:4px 12px;font-size:9px;font-weight:600">Achievements</span>
+      </div>
+
+      <!-- Section card example -->
+      <div style="background:white;border-radius:12px;border:1px solid #e2e8f0;margin-top:8px;overflow:hidden">
+        <div style="padding:10px 14px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:8px">
+          <div style="width:28px;height:28px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:12px">❤️</div>
+          <span style="font-size:12px;font-weight:700;color:#0f172a">About</span>
+        </div>
+        <div style="padding:12px 14px;font-size:9px;color:#475569;line-height:1.7">15 years of cardiac care. Specialising in preventive cardiology and complex interventional procedures at AIIMS Delhi. Trained at PGI Chandigarh.</div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div style="margin-top:20px;text-align:center">
+  <p class="subtitle">Does this hero layout look right? The section nav strip and a sample card are shown below the hero on both views.</p>
+</div>

@@ -1,0 +1,91 @@
+<h2>Section card styling — how should they feel?</h2>
+<p class="subtitle">These are the content cards below the hero: About, Qualifications, Services, Clinic, etc.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="floating" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f0f6ff;padding:14px;font-family:system-ui">
+      <!-- Floating cards with strong shadow -->
+      <div style="background:white;border-radius:16px;padding:12px;box-shadow:0 8px 28px rgba(37,99,235,0.13);margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap-8px;margin-bottom:8px">
+          <div style="width:32px;height:32px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:14px;margin-right:8px">❤️</div>
+          <span style="font-size:12px;font-weight:700;color:#12233f;letter-spacing:-0.2px">About</span>
+        </div>
+        <div style="font-size:9px;color:#4b5563;line-height:1.6">15 years of cardiac care. Specialising in preventive cardiology and complex catheterisation procedures.</div>
+      </div>
+      <div style="background:white;border-radius:16px;padding:12px;box-shadow:0 8px 28px rgba(37,99,235,0.13)">
+        <div style="display:flex;align-items:center;gap-8px;margin-bottom:8px">
+          <div style="width:32px;height:32px;border-radius:10px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:14px;margin-right:8px">🎓</div>
+          <span style="font-size:12px;font-weight:700;color:#12233f;letter-spacing:-0.2px">Qualifications</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;align-items:center;gap:5px"><div style="width:5px;height:5px;border-radius:50%;background:#3b82f6;flex-shrink:0"></div><span style="font-size:9px;color:#374151">MBBS, AIIMS Delhi (2003)</span></div>
+          <div style="display:flex;align-items:center;gap:5px"><div style="width:5px;height:5px;border-radius:50%;background:#93c5fd;flex-shrink:0"></div><span style="font-size:9px;color:#374151">MD Medicine (2006)</span></div>
+          <div style="display:flex;align-items:center;gap:5px"><div style="width:5px;height:5px;border-radius:50%;background:#93c5fd;flex-shrink:0"></div><span style="font-size:9px;color:#374151">DM Cardiology, PGI (2009)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Floating (strong blue shadow)</h3>
+      <p>White cards floating on a light blue tinted background. Deep shadows make them feel premium and lifted. High contrast between card and page.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="flat-elegant" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f8fafc;padding:14px;font-family:system-ui">
+      <!-- Flat elegant with subtle border -->
+      <div style="background:white;border-radius:14px;padding:12px;border:1px solid #e2e8f0;margin-bottom:8px">
+        <div style="display:flex;align-items:center;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #f1f5f9">
+          <div style="width:28px;height:28px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:12px;margin-right:8px">❤️</div>
+          <span style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:-0.2px">About</span>
+        </div>
+        <div style="font-size:9px;color:#475569;line-height:1.6">15 years of cardiac care. Specialising in preventive cardiology and complex catheterisation procedures.</div>
+      </div>
+      <div style="background:white;border-radius:14px;padding:12px;border:1px solid #e2e8f0">
+        <div style="display:flex;align-items:center;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid #f1f5f9">
+          <div style="width:28px;height:28px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:12px;margin-right:8px">🎓</div>
+          <span style="font-size:12px;font-weight:700;color:#0f172a;letter-spacing:-0.2px">Qualifications</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:4px;height:4px;border-radius:50%;background:#2563eb;flex-shrink:0"></div><span style="font-size:9px;color:#374151">MBBS, AIIMS Delhi (2003)</span></div>
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:4px;height:4px;border-radius:50%;background:#93c5fd;flex-shrink:0"></div><span style="font-size:9px;color:#374151">MD Medicine (2006)</span></div>
+          <div style="display:flex;align-items:center;gap:6px"><div style="width:4px;height:4px;border-radius:50%;background:#93c5fd;flex-shrink:0"></div><span style="font-size:9px;color:#374151">DM Cardiology, PGI (2009)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Flat elegant (refined border)</h3>
+      <p>Thin border, no shadow. Title separated by a hairline divider inside the card. Feels clean and editorial — like a well-designed medical report.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="tinted" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#f0f6ff;padding:14px;font-family:system-ui">
+      <!-- Tinted with gradient accent -->
+      <div style="border-radius:16px;overflow:hidden;margin-bottom:8px;box-shadow:0 2px 12px rgba(37,99,235,0.1)">
+        <div style="background:linear-gradient(135deg,#dbeafe,#eff6ff);padding:8px 12px;display:flex;align-items:center;gap:6px">
+          <div style="width:26px;height:26px;border-radius:8px;background:white;display:flex;align-items:center;justify-content:center;font-size:11px">❤️</div>
+          <span style="font-size:11px;font-weight:700;color:#1e40af;letter-spacing:-0.2px">About</span>
+        </div>
+        <div style="background:white;padding:10px 12px;font-size:9px;color:#475569;line-height:1.6">15 years of cardiac care. Specialising in preventive cardiology and complex catheterisation procedures.</div>
+      </div>
+      <div style="border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(37,99,235,0.1)">
+        <div style="background:linear-gradient(135deg,#dbeafe,#eff6ff);padding:8px 12px;display:flex;align-items:center;gap:6px">
+          <div style="width:26px;height:26px;border-radius:8px;background:white;display:flex;align-items:center;justify-content:center;font-size:11px">🎓</div>
+          <span style="font-size:11px;font-weight:700;color:#1e40af;letter-spacing:-0.2px">Qualifications</span>
+        </div>
+        <div style="background:white;padding:10px 12px">
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <div style="display:flex;align-items:center;gap:6px"><div style="width:4px;height:4px;border-radius:50%;background:#2563eb;flex-shrink:0"></div><span style="font-size:9px;color:#374151">MBBS, AIIMS Delhi (2003)</span></div>
+            <div style="display:flex;align-items:center;gap:6px"><div style="width:4px;height:4px;border-radius:50%;background:#93c5fd;flex-shrink:0"></div><span style="font-size:9px;color:#374151">MD Medicine (2006)</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Tinted header (gradient accent)</h3>
+      <p>Each card has a light blue gradient header band with the section title. White body below. Strong visual grouping — section title always stands out.</p>
+    </div>
+  </div>
+
+</div>
