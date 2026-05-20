@@ -45,12 +45,12 @@ function SectionBand({
 }) {
   return (
     <section id={id} className={wide ? 'md:col-span-2' : undefined}>
-      <div className="rounded-[1.75rem] border border-clinical-line bg-white/90 p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-clinical md:p-8">
-        <div className="mb-6 flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-clinical-soft text-brand-700">
+      <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm md:p-7">
+        <div className="mb-5 flex items-center gap-3 border-b border-gray-100 pb-4">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
             {icon}
           </span>
-          <h2 className="text-xl font-semibold tracking-tight text-clinical-ink">{title}</h2>
+          <h2 className="text-base font-bold tracking-tight text-gray-900">{title}</h2>
         </div>
         {children}
       </div>
@@ -60,20 +60,20 @@ function SectionBand({
 
 function Pill({ label }: { label: string }) {
   return (
-    <span className="inline-flex rounded-full border border-brand-100 bg-brand-50 px-3.5 py-1.5 text-sm font-semibold text-brand-700">
+    <span className="inline-flex rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-medium text-gray-700">
       {label}
     </span>
   )
 }
 
-function ListItems({ items, accent = 'bg-brand-500' }: { items?: string[]; accent?: string }) {
+function ListItems({ items, accent = 'bg-gray-400' }: { items?: string[]; accent?: string }) {
   if (!hasItems(items)) return null
   return (
     <ul className="space-y-3">
       {items.map((item) => (
         <li key={item} className="flex gap-3 text-gray-700">
-          <span className={`mt-2 h-2 w-2 shrink-0 rounded-full ${accent}`} />
-          <span className="leading-7">{item}</span>
+          <span className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${accent}`} />
+          <span className="leading-6 text-gray-600">{item}</span>
         </li>
       ))}
     </ul>
@@ -111,7 +111,7 @@ function Specialization({ sections }: SectionsProps) {
   if (!data) return null
   return (
     <SectionBand id="section-specialization" title="Specialization" icon={<Stethoscope size={20} />}>
-      <p className="mb-4 text-lg font-semibold text-clinical-ink">{data.primary}</p>
+      <p className="mb-4 text-base font-bold text-gray-900">{data.primary}</p>
       <div className="flex flex-wrap gap-2">
         {data.sub_specialties.map((item) => <Pill key={item} label={item} />)}
       </div>
@@ -127,13 +127,13 @@ function Experience({ sections }: SectionsProps) {
   return (
     <SectionBand id="section-experience" title="Experience" icon={<BookOpen size={20} />}>
       {years > 0 && (
-        <div className="mb-5 inline-flex items-end gap-3 rounded-2xl bg-clinical-soft px-5 py-4">
-          <span className="text-5xl font-semibold text-brand-700">{years}</span>
-          <span className="pb-1 text-sm font-semibold uppercase text-gray-500">years</span>
+        <div className="mb-5 inline-flex items-end gap-2 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+          <span className="text-4xl font-bold text-brand-700">{years}</span>
+          <span className="pb-1 text-xs font-bold uppercase tracking-wide text-gray-500">years exp.</span>
         </div>
       )}
       {data.current_affiliation && (
-        <p className="mb-4 font-semibold text-clinical-ink">{data.current_affiliation}</p>
+        <p className="mb-4 font-semibold text-gray-800">{data.current_affiliation}</p>
       )}
       <ListItems items={hospitalItems} />
     </SectionBand>
@@ -154,7 +154,7 @@ function Services({ sections }: SectionsProps) {
     <SectionBand id="section-services" title="Services" icon={<Shield size={20} />} wide>
       <div className="grid gap-5 md:grid-cols-3">
         {groups.map((group) => (
-          <div key={group.title} className="rounded-2xl bg-clinical-soft p-5">
+          <div key={group.title} className="rounded-2xl bg-gray-50 p-5">
             <p className="mb-3 text-xs font-bold uppercase text-brand-700">{group.title}</p>
             <div className="flex flex-wrap gap-2">
               {group.items.map((item) => <Pill key={item} label={item} />)}
@@ -168,8 +168,8 @@ function Services({ sections }: SectionsProps) {
 
 function LocationCard({ loc }: { loc: LocationEntry }) {
   return (
-    <div className="rounded-2xl border border-clinical-line bg-clinical-soft p-4 space-y-2">
-      <p className="font-semibold text-clinical-ink">{loc.name}</p>
+    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-2">
+      <p className="font-semibold text-gray-900">{loc.name}</p>
       <InfoRow icon={<MapPin size={18} />} text={loc.address} />
       <InfoRow icon={<Clock size={18} />} text={loc.timings} />
       <InfoLink icon={<Phone size={18} />} href={`tel:${loc.phone}`} text={loc.phone} />
@@ -206,7 +206,7 @@ function Clinic({ sections }: SectionsProps) {
 
 function InfoRow({ icon, text }: { icon: ReactNode; text: string }) {
   return (
-    <div className="flex gap-3 rounded-2xl bg-clinical-soft p-4">
+    <div className="flex gap-3 rounded-xl bg-gray-50 p-3.5">
       <span className="shrink-0 text-brand-700">{icon}</span>
       <span>{text}</span>
     </div>
@@ -215,7 +215,7 @@ function InfoRow({ icon, text }: { icon: ReactNode; text: string }) {
 
 function InfoLink({ icon, href, text }: { icon: ReactNode; href: string; text: string }) {
   return (
-    <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="flex gap-3 rounded-2xl bg-clinical-soft p-4 text-brand-700 transition hover:bg-brand-50">
+    <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" className="flex gap-3 rounded-xl bg-gray-50 p-3.5 text-brand-700 transition hover:bg-brand-100">
       <span className="shrink-0">{icon}</span>
       <span>{text}</span>
     </a>
