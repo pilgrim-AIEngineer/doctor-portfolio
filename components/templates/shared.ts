@@ -179,8 +179,8 @@ export function getVisibleSectionIds(sections: TemplateSections): string[] {
     ['section-qualifications', !!(sections.qualifications?.degrees?.length || sections.qualifications?.fellowships?.length)],
     ['section-specialization', !!sections.specialization],
     ['section-experience',    !!sections.experience],
-    ['section-services',      !!(sections.services?.treatments?.length || sections.services?.procedures?.length)],
-    ['section-clinic_info',   !!(sections.locations?.locations?.length || sections.clinicInfo)],
+    ['section-services',      !!(sections.services?.treatments?.length || sections.services?.procedures?.length || sections.services?.consultation_types?.length)],
+    ['section-clinic_info',   !!(sections.locations?.locations?.length || sections.clinicInfo)], // Clinic component renders from either locations or clinicInfo
     ['section-achievements',  !!(sections.achievements?.awards?.length || sections.achievements?.recognitions?.length)],
     ['section-gallery',       !!sections.gallery?.images?.length],
     ['section-languages',     !!(sections.languages?.spoken?.length || sections.insurance?.panels?.length || getSocialLinks(sections.social).length)],
