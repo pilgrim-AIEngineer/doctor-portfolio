@@ -14,8 +14,10 @@ import {
   Stethoscope,
   User2,
 } from 'lucide-react'
+import type { Doctor } from '@/types/Doctor'
 import type { LocationEntry } from '@/types/Profile'
 import GalleryLightbox from '@/components/templates/classic/GalleryLightbox'
+import SidebarNav from './SidebarNav'
 import {
   computeExperienceYears,
   getAchievementItems,
@@ -29,6 +31,11 @@ import {
 
 interface SectionsProps {
   sections: TemplateSections
+}
+
+interface ModernSectionsProps {
+  sections: TemplateSections
+  doctor: Doctor
 }
 
 const NAV_ITEMS = [
@@ -90,7 +97,7 @@ function ItemList({ items }: { items?: string[] }) {
 
 function AnchorNav() {
   return (
-    <nav className="sticky top-4 z-20 mx-auto mb-8 flex max-w-4xl justify-center px-6">
+    <nav className="sticky top-4 z-20 mx-auto mb-8 flex max-w-4xl justify-center px-6 lg:hidden">
       <div className="flex gap-1 rounded-full border border-white/10 bg-modern-panel/80 p-1 shadow-glass backdrop-blur">
         {NAV_ITEMS.map((item) => (
           <a key={item.href} href={item.href} className="rounded-full px-4 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white">
@@ -303,19 +310,22 @@ function MiniList({ title, items }: { title: string; items?: string[] }) {
   )
 }
 
-export default function ModernSections({ sections }: SectionsProps) {
+export default function ModernSections({ sections, doctor }: ModernSectionsProps) {
   return (
     <main id="modern-sections" className="relative bg-gradient-to-b from-modern-ink via-modern-panel to-modern-ink px-0 py-10">
       <AnchorNav />
-      <div className="mx-auto grid max-w-7xl gap-5 px-6 lg:grid-cols-2">
-        <About sections={sections} />
-        <Services sections={sections} />
-        <Experience sections={sections} />
-        <Qualifications sections={sections} />
-        <Specialization sections={sections} />
-        <Clinic sections={sections} />
-        <Gallery sections={sections} />
-        <Extras sections={sections} />
+      <div className="mx-auto max-w-7xl px-6 lg:flex lg:items-start lg:gap-12">
+        <SidebarNav sections={sections} doctor={doctor} />
+        <div className="flex-1 min-w-0 grid gap-5 lg:grid-cols-2">
+          <About sections={sections} />
+          <Services sections={sections} />
+          <Experience sections={sections} />
+          <Qualifications sections={sections} />
+          <Specialization sections={sections} />
+          <Clinic sections={sections} />
+          <Gallery sections={sections} />
+          <Extras sections={sections} />
+        </div>
       </div>
     </main>
   )
